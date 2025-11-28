@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
-import { MapPin, Search, Star, ChefHat, ArrowRight, Sparkles, TrendingUp, Clock } from 'lucide-react'
+import { MapPin, Search, Star, ChefHat, ArrowRight, Sparkles, TrendingUp, Clock, Utensils } from 'lucide-react'
 import { Logo } from '@/components/logo'
 import { Navbar } from '@/components/navbar'
 import { Footer } from '@/components/footer'
@@ -26,12 +26,12 @@ export default function Home() {
 
           <div className="container mx-auto px-4 text-center relative z-10">
             {/* Live Badge */}
-            <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-amber-50 to-orange-50 border border-primary/20 text-sm font-semibold mb-8 animate-scale-in shadow-soft hover-lift">
+            <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-orange-50 to-amber-50 border border-primary/20 text-sm font-semibold mb-8 animate-scale-in shadow-soft hover-lift">
               <span className="relative flex h-3 w-3">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-3 w-3 bg-primary shadow-primary"></span>
               </span>
-              <span className="bg-gradient-to-r from-primary to-orange-600 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
                 Live in {loading ? '...' : (cityName?.trim() ? cityName : 'your city')}
               </span>
             </div>
@@ -40,11 +40,11 @@ export default function Home() {
             <h1 className="text-5xl md:text-7xl lg:text-8xl font-black mb-6 tracking-tight text-foreground leading-[1.1] animate-slide-up">
               Discover the Best <br />
               <span className="relative inline-block">
-                <span className="text-gradient-animate">
+                <span className="text-gradient-animate text-glow steam">
                   Street Food
                 </span>
-                <div className="absolute -top-6 -right-8 animate-float" style={{ animationDelay: '0.5s' }}>
-                  <Sparkles className="h-8 w-8 text-primary opacity-70" />
+                <div className="absolute -top-8 -right-10 animate-float" style={{ animationDelay: '0.5s' }}>
+                  <Sparkles className="h-10 w-10 text-primary opacity-70 food-sparkle" />
                 </div>
               </span>
               <br />
@@ -60,14 +60,14 @@ export default function Home() {
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16 animate-slide-up" style={{ animationDelay: '0.2s' }}>
               <Link href="/explore">
-                <Button size="lg" className="h-16 px-10 rounded-full text-lg font-semibold bg-primary hover:bg-primary/90 text-primary-foreground shadow-primary hover-lift hover-glow group">
+                <Button size="lg" className="h-16 px-10 rounded-full text-lg font-semibold btn-gradient shadow-elevated hover-lift hover-glow group border-none">
                   <Search className="mr-2 h-6 w-6 group-hover:scale-110 transition-transform" />
                   Find Food Now
                   <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
                 </Button>
               </Link>
               <Link href="/signup?type=vendor">
-                <Button size="lg" variant="outline" className="h-16 px-10 rounded-full text-lg font-semibold border-2 border-primary text-primary hover:bg-primary hover:text-white transition-all hover-lift group">
+                <Button size="lg" variant="outline" className="h-16 px-10 rounded-full text-lg font-semibold btn-outline hover-lift group bg-white/50 backdrop-blur-sm">
                   <ChefHat className="mr-2 h-6 w-6 group-hover:scale-110 transition-transform" />
                   List Your Stall
                 </Button>
@@ -75,25 +75,25 @@ export default function Home() {
             </div>
 
             {/* Stats */}
-            <div className="grid grid-cols-3 gap-8 max-w-2xl mx-auto animate-fade-in" style={{ animationDelay: '0.3s' }}>
+            <div className="grid grid-cols-3 gap-8 max-w-2xl mx-auto animate-fade-in glass p-6 rounded-2xl shadow-soft" style={{ animationDelay: '0.3s' }}>
               <div className="text-center">
                 <div className="text-3xl md:text-4xl font-black text-primary mb-1">500+</div>
-                <div className="text-sm text-muted-foreground font-medium">Vendors</div>
+                <div className="text-sm text-muted-foreground font-bold">Vendors</div>
               </div>
-              <div className="text-center">
+              <div className="text-center border-x border-primary/10">
                 <div className="text-3xl md:text-4xl font-black text-primary mb-1">10K+</div>
-                <div className="text-sm text-muted-foreground font-medium">Happy Users</div>
+                <div className="text-sm text-muted-foreground font-bold">Happy Users</div>
               </div>
               <div className="text-center">
                 <div className="text-3xl md:text-4xl font-black text-primary mb-1">4.9</div>
-                <div className="text-sm text-muted-foreground font-medium">Avg Rating</div>
+                <div className="text-sm text-muted-foreground font-bold">Avg Rating</div>
               </div>
             </div>
           </div>
         </section>
 
         {/* Enhanced Features Section */}
-        <section className="py-24 bg-gradient-to-b from-muted/50 to-background">
+        <section className="py-24 bg-gradient-to-b from-muted/30 to-background">
           <div className="container mx-auto px-4">
             <div className="text-center mb-16">
               <div className="inline-block px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-bold mb-4 animate-scale-in">
@@ -109,8 +109,8 @@ export default function Home() {
 
             <div className="grid md:grid-cols-3 gap-8">
               {/* Feature 1 */}
-              <div className="group bg-card p-8 rounded-3xl border border-border hover:border-primary/50 hover:shadow-elevated transition-all hover:-translate-y-2 animate-slide-up" style={{ animationDelay: '0.1s' }}>
-                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center mb-6 text-primary group-hover:scale-110 transition-transform">
+              <div className="group bg-card p-8 rounded-3xl border border-border hover:border-primary/50 hover:shadow-elevated transition-all card-tilt animate-slide-up" style={{ animationDelay: '0.1s' }}>
+                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center mb-6 text-primary group-hover:scale-110 transition-transform food-glow">
                   <MapPin className="h-8 w-8" />
                 </div>
                 <h3 className="text-2xl font-bold mb-3 text-card-foreground">Live Tracking</h3>
@@ -120,8 +120,8 @@ export default function Home() {
               </div>
 
               {/* Feature 2 */}
-              <div className="group bg-card p-8 rounded-3xl border border-border hover:border-secondary/50 hover:shadow-elevated transition-all hover:-translate-y-2 animate-slide-up" style={{ animationDelay: '0.2s' }}>
-                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-secondary/20 to-secondary/10 flex items-center justify-center mb-6 text-secondary group-hover:scale-110 transition-transform">
+              <div className="group bg-card p-8 rounded-3xl border border-border hover:border-secondary/50 hover:shadow-elevated transition-all card-tilt animate-slide-up" style={{ animationDelay: '0.2s' }}>
+                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-secondary/20 to-secondary/10 flex items-center justify-center mb-6 text-secondary group-hover:scale-110 transition-transform food-glow">
                   <Star className="h-8 w-8" />
                 </div>
                 <h3 className="text-2xl font-bold mb-3 text-card-foreground">Trusted Reviews</h3>
@@ -131,8 +131,8 @@ export default function Home() {
               </div>
 
               {/* Feature 3 */}
-              <div className="group bg-card p-8 rounded-3xl border border-border hover:border-primary/50 hover:shadow-elevated transition-all hover:-translate-y-2 animate-slide-up" style={{ animationDelay: '0.3s' }}>
-                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center mb-6 text-primary group-hover:scale-110 transition-transform">
+              <div className="group bg-card p-8 rounded-3xl border border-border hover:border-primary/50 hover:shadow-elevated transition-all card-tilt animate-slide-up" style={{ animationDelay: '0.3s' }}>
+                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center mb-6 text-primary group-hover:scale-110 transition-transform food-glow">
                   <ChefHat className="h-8 w-8" />
                 </div>
                 <h3 className="text-2xl font-bold mb-3 text-card-foreground">Vendor Tools</h3>
@@ -147,7 +147,7 @@ export default function Home() {
         {/* Enhanced CTA Section */}
         <section className="py-24">
           <div className="container mx-auto px-4">
-            <div className="relative bg-gradient-to-br from-primary via-primary to-orange-600 rounded-[3rem] p-12 md:p-20 text-center text-primary-foreground overflow-hidden shadow-floating animate-scale-in">
+            <div className="relative bg-gradient-to-br from-primary via-secondary to-accent rounded-[3rem] p-12 md:p-20 text-center text-primary-foreground overflow-hidden shadow-elevated animate-scale-in">
               {/* Background Pattern */}
               <div className="absolute inset-0 opacity-10">
                 <div className="absolute top-0 right-0 w-64 h-64 bg-white rounded-full blur-3xl"></div>
@@ -155,7 +155,7 @@ export default function Home() {
               </div>
 
               <div className="relative z-10">
-                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/20 text-white text-sm font-bold mb-6">
+                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/20 text-white text-sm font-bold mb-6 backdrop-blur-sm">
                   <TrendingUp className="h-4 w-4" />
                   Join the Movement
                 </div>
@@ -166,7 +166,7 @@ export default function Home() {
                   Join <span className="font-bold">10,000+ food lovers</span> {loading ? 'discovering' : (cityName?.trim() ? `in ${cityName} discovering` : 'discovering')} hidden gems every day.
                 </p>
                 <Link href="/signup">
-                  <Button size="lg" className="h-16 px-12 rounded-full text-lg font-bold bg-white text-primary hover:bg-white/95 shadow-floating hover-lift hover-glow group">
+                  <Button size="lg" className="h-16 px-12 rounded-full text-lg font-bold bg-white text-primary hover:bg-white/95 shadow-lg hover-lift hover-glow group border-none">
                     Get Started Free
                     <ArrowRight className="ml-2 h-6 w-6 group-hover:translate-x-1 transition-transform" />
                   </Button>
@@ -177,7 +177,6 @@ export default function Home() {
         </section>
       </main>
 
-      {/* Enhanced Footer */}
       {/* Enhanced Footer */}
       <Footer />
     </div>

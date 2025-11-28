@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { Logo } from '@/components/logo'
 import { Button } from '@/components/ui/button'
-import { Mail, Lock, ArrowLeft } from 'lucide-react'
+import { Mail, Lock, ArrowLeft, Sparkles } from 'lucide-react'
 import { authApi } from '@/lib/api'
 
 export default function SignInPage() {
@@ -38,7 +38,7 @@ export default function SignInPage() {
       } else if (role === 'ADMIN') {
         router.push('/admin')
       } else {
-        router.push('/explore')
+        router.push('/community')
       }
     } catch (err: any) {
       console.error('Login error:', err)
@@ -59,64 +59,68 @@ export default function SignInPage() {
 
   return (
     <div className="min-h-screen bg-background flex flex-col relative overflow-hidden">
-      {/* Subtle Background */}
-      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-primary/5 rounded-full blur-3xl -z-10" />
+      {/* Animated Background */}
+      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-primary/5 rounded-full blur-3xl animate-float -z-10" />
+      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-secondary/5 rounded-full blur-3xl animate-float -z-10" style={{ animationDelay: '2s' }} />
 
       {/* Back button */}
-      <div className="p-4 sm:p-6">
-        <Link href="/" className="inline-flex items-center gap-2 text-primary hover:text-primary/80 font-medium transition-colors">
+      <div className="p-4 sm:p-6 relative z-10">
+        <Link href="/" className="inline-flex items-center gap-2 text-primary hover:text-primary/80 font-medium transition-colors hover-lift">
           <ArrowLeft size={20} />
           Back to Home
         </Link>
       </div>
 
       {/* Sign In Form */}
-      <div className="flex-1 flex items-center justify-center px-4 py-8">
-        <div className="w-full max-w-md">
+      <div className="flex-1 flex items-center justify-center px-4 py-8 relative z-10">
+        <div className="w-full max-w-md animate-slide-up">
           {/* Logo and Heading */}
           <div className="text-center mb-8">
-            <div className="flex justify-center mb-4">
+            <div className="flex justify-center mb-4 hover-lift">
               <Logo />
             </div>
-            <h1 className="text-3xl font-bold text-foreground mb-2">Welcome Back</h1>
+            <h1 className="text-3xl font-bold mb-2">
+              <span className="text-gradient-animate text-glow">Welcome Back</span>
+            </h1>
             <p className="text-muted-foreground">Sign in to discover amazing street food near you</p>
           </div>
 
           {/* Form */}
-          <form onSubmit={handleSignIn} className="space-y-6 bg-card rounded-2xl shadow-lg p-8 border border-border">
+          <form onSubmit={handleSignIn} className="space-y-6 glass rounded-3xl shadow-elevated p-8 border border-white/20">
             {error && (
-              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
+              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm animate-fade-in flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-red-500" />
                 {error}
               </div>
             )}
 
             {/* Email Input */}
-            <div>
-              <label className="block text-sm font-medium text-foreground mb-2">Email Address</label>
-              <div className="relative">
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-primary size-5" />
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-foreground ml-1">Email Address</label>
+              <div className="relative group">
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-primary/60 group-hover:text-primary transition-colors size-5" />
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="you@example.com"
-                  className="w-full pl-12 pr-4 py-3 border border-orange-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent bg-white/50"
+                  className="w-full pl-12 pr-4 py-3.5 border-2 border-primary/10 rounded-xl focus:outline-none focus:border-primary bg-white/50 transition-all hover:bg-white/80"
                   required
                 />
               </div>
             </div>
 
             {/* Password Input */}
-            <div>
-              <label className="block text-sm font-medium text-foreground mb-2">Password</label>
-              <div className="relative">
-                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-primary size-5" />
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-foreground ml-1">Password</label>
+              <div className="relative group">
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-primary/60 group-hover:text-primary transition-colors size-5" />
                 <input
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Enter your password"
-                  className="w-full pl-12 pr-4 py-3 border border-orange-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent bg-white/50"
+                  className="w-full pl-12 pr-4 py-3.5 border-2 border-primary/10 rounded-xl focus:outline-none focus:border-primary bg-white/50 transition-all hover:bg-white/80"
                   required
                 />
               </div>
@@ -126,22 +130,29 @@ export default function SignInPage() {
             <Button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-medium py-3 rounded-lg transition-all disabled:opacity-50"
+              className="w-full btn-gradient h-12 rounded-xl text-lg font-semibold shadow-lg hover-lift hover-glow disabled:opacity-50 disabled:hover:transform-none"
             >
-              {isLoading ? 'Signing In...' : 'Sign In'}
+              {isLoading ? (
+                <span className="flex items-center gap-2">
+                  <span className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent" />
+                  Signing In...
+                </span>
+              ) : (
+                'Sign In'
+              )}
             </Button>
 
             {/* Divider */}
             <div className="flex items-center gap-3 my-6">
-              <div className="flex-1 h-px bg-orange-200" />
-              <span className="text-xs text-muted-foreground font-medium">OR</span>
-              <div className="flex-1 h-px bg-orange-200" />
+              <div className="flex-1 h-px bg-primary/10" />
+              <span className="text-xs text-muted-foreground font-medium uppercase tracking-wider">OR</span>
+              <div className="flex-1 h-px bg-primary/10" />
             </div>
 
             {/* Sign Up Link */}
             <p className="text-center text-sm text-muted-foreground">
               Don't have an account?{' '}
-              <Link href="/signup" className="text-primary hover:text-primary/80 font-semibold">
+              <Link href="/signup" className="text-primary hover:text-primary/80 font-bold hover:underline decoration-2 underline-offset-4">
                 Sign Up
               </Link>
             </p>

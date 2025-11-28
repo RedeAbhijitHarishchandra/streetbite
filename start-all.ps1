@@ -7,19 +7,15 @@ Write-Host "         StreetBite - Complete Startup Script             " -Foregro
 Write-Host "==========================================================" -ForegroundColor Cyan
 Write-Host ""
 
-# Use existing env var or prompt the user (secure)
-if (-not $env:GOOGLE_GEOCODING_API_KEY -or $env:GOOGLE_GEOCODING_API_KEY -eq "") {
-    $enteredKey = Read-Host "Enter Google Geocoding API key (leave empty to skip)"
-    if ($enteredKey) {
-        $env:GOOGLE_GEOCODING_API_KEY = $enteredKey
-        Write-Host "Google Maps API key configured" -ForegroundColor Green
-    }
-    else {
-        Write-Host "Google Maps API key not set; geocoding features may be limited" -ForegroundColor Yellow
-    }
-}
-else {
-    Write-Host "Google Maps API key detected in environment" -ForegroundColor Green
+# Set Google Maps API Key
+$env:GOOGLE_MAPS_API_KEY = "AIzaSyBSYt6G0FIxdN4IGwQij78gxe-DMIjDBoU"
+$env:NEXT_PUBLIC_GOOGLE_MAPS_API_KEY = "AIzaSyBSYt6G0FIxdN4IGwQij78gxe-DMIjDBoU"
+Write-Host "Google Maps API key configured" -ForegroundColor Green
+
+# Check for DB Password
+if (-not $env:DB_PASSWORD) {
+    Write-Host "DB_PASSWORD not set. Using default 'password' (INSECURE)" -ForegroundColor Yellow
+    $env:DB_PASSWORD = "password"
 }
 
 # Check for Firebase credentials
@@ -36,32 +32,31 @@ else {
 
 Write-Host ""
 
-# Check if ports are available
-$port8080 = Test-NetConnection -ComputerName localhost -Port 8080 -InformationLevel Quiet -WarningAction SilentlyContinue
-$port3000 = Test-NetConnection -ComputerName localhost -Port 3000 -InformationLevel Quiet -WarningAction SilentlyContinue
-
-if ($port8080) {
-    Write-Host "Port 8080 is already in use (backend may already be running)" -ForegroundColor Yellow
+# Ensure clean start by stopping existing processes
+Write-Host "Checking for existing processes..." -ForegroundColor Cyan
+if (Test-Path ".\stop-all.ps1") {
+    .\stop-all.ps1
 }
 
-if ($port3000) {
-    Write-Host "Port 3000 is already in use (frontend may already be running)" -ForegroundColor Yellow
-}
+# Wait a moment for ports to free up
+Start-Sleep -Seconds 2
 
 Write-Host ""
 Write-Host "Starting servers..." -ForegroundColor Cyan
 Write-Host ""
 
 # Capture values to pass into background jobs
-$geocodeKey = $env:GOOGLE_GEOCODING_API_KEY
+$geocodeKey = $env:GOOGLE_MAPS_API_KEY
+$dbPassword = $env:DB_PASSWORD
 $firebaseCred = if (Test-Path $firebaseKeyPath) { $firebaseKeyPath } else { $env:GOOGLE_APPLICATION_CREDENTIALS }
 
 # Start backend in background
 Write-Host "Starting Backend (Spring Boot)..." -ForegroundColor Cyan
 $backendJob = Start-Job -ScriptBlock {
-    $env:JAVA_HOME = "C:\Program Files\Java\jdk-22"
+    $env:JAVA_HOME = "C:\Program Files\Java\jdk-21"
     if ($using:firebaseCred) { $env:GOOGLE_APPLICATION_CREDENTIALS = $using:firebaseCred }
-    if ($using:geocodeKey) { $env:GOOGLE_GEOCODING_API_KEY = $using:geocodeKey }
+    if ($using:geocodeKey) { $env:GOOGLE_MAPS_API_KEY = $using:geocodeKey }
+    if ($using:dbPassword) { $env:DB_PASSWORD = $using:dbPassword }
 
     Set-Location (Join-Path $using:PSScriptRoot "backend")
     if (Test-Path ".\mvnw.cmd") {
@@ -75,6 +70,7 @@ $backendJob = Start-Job -ScriptBlock {
 # Start frontend in background
 Write-Host "Starting Frontend (Next.js)..." -ForegroundColor Cyan
 $frontendJob = Start-Job -ScriptBlock {
+    if ($using:geocodeKey) { $env:NEXT_PUBLIC_GOOGLE_MAPS_API_KEY = $using:geocodeKey }
     Set-Location (Join-Path $using:PSScriptRoot "frontend")
     # $env:NEXT_PUBLIC_BACKEND_URL = "http://localhost:8080"
     npm run dev 2>&1

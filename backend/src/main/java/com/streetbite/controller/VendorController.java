@@ -11,6 +11,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/vendors")
+@CrossOrigin(origins = { "http://localhost:3000", "http://localhost:4000" }, allowCredentials = "true")
 public class VendorController {
 
     @Autowired
@@ -102,10 +103,20 @@ public class VendorController {
                         existingVendor.setPhone(vendorUpdates.getPhone());
                     if (vendorUpdates.getAddress() != null)
                         existingVendor.setAddress(vendorUpdates.getAddress());
-                    if (vendorUpdates.getLatitude() != null)
+                    if (vendorUpdates.getLatitude() != null) {
+                        if (vendorUpdates.getLatitude() < -90 || vendorUpdates.getLatitude() > 90) {
+                            return ResponseEntity.badRequest()
+                                    .body(Map.of("error", "Invalid latitude: must be between -90 and 90"));
+                        }
                         existingVendor.setLatitude(vendorUpdates.getLatitude());
-                    if (vendorUpdates.getLongitude() != null)
+                    }
+                    if (vendorUpdates.getLongitude() != null) {
+                        if (vendorUpdates.getLongitude() < -180 || vendorUpdates.getLongitude() > 180) {
+                            return ResponseEntity.badRequest()
+                                    .body(Map.of("error", "Invalid longitude: must be between -180 and 180"));
+                        }
                         existingVendor.setLongitude(vendorUpdates.getLongitude());
+                    }
                     if (vendorUpdates.getHours() != null)
                         existingVendor.setHours(vendorUpdates.getHours());
 

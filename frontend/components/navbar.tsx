@@ -60,13 +60,13 @@ export function Navbar() {
     { label: 'Explore', href: '/explore' },
     { label: 'Offers', href: '/offers' },
     { label: 'About', href: '/about' },
-    { label: 'Community', href: '/#community' },
+    { label: 'Community', href: '/community' },
   ]
 
   return (
     <nav className={`sticky top-0 z-50 transition-all duration-300 ${scrolled
-        ? 'bg-white/90 backdrop-blur-xl shadow-lg border-b border-orange-100/50'
-        : 'bg-white/80 backdrop-blur-md border-b border-orange-100/30 shadow-sm'
+      ? 'bg-white/90 backdrop-blur-xl shadow-lg border-b border-orange-100/50'
+      : 'bg-white/80 backdrop-blur-md border-b border-orange-100/30 shadow-sm'
       }`}>
       <div className="max-w-7xl mx-auto px-6">
         <div className="flex justify-between items-center h-16">
@@ -86,8 +86,8 @@ export function Navbar() {
                   key={item.href}
                   href={item.href}
                   className={`relative px-4 py-2 font-medium text-sm rounded-lg transition-all duration-200 group ${isActive
-                      ? 'text-primary'
-                      : 'text-foreground/70 hover:text-primary hover:bg-orange-50'
+                    ? 'text-primary'
+                    : 'text-foreground/70 hover:text-primary hover:bg-orange-50'
                     }`}
                 >
                   {item.label}
@@ -155,8 +155,8 @@ export function Navbar() {
                   key={item.href}
                   href={item.href}
                   className={`block px-4 py-3 font-medium text-sm rounded-lg transition-all duration-200 ${isActive
-                      ? 'text-primary bg-orange-50 border-l-4 border-primary'
-                      : 'text-foreground/70 hover:text-primary hover:bg-orange-50'
+                    ? 'text-primary bg-orange-50 border-l-4 border-primary'
+                    : 'text-foreground/70 hover:text-primary hover:bg-orange-50'
                     }`}
                   onClick={() => setIsOpen(false)}
                 >

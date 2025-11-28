@@ -1,68 +1,123 @@
 'use client'
 
 import Link from 'next/link'
-import { Facebook, Instagram, Twitter, Mail, Phone, MapPin, Heart } from 'lucide-react'
+import { Facebook, Instagram, Twitter, Mail, Phone, MapPin, Heart, ArrowRight, Sparkles } from 'lucide-react'
 
 export function Footer() {
     const currentYear = new Date().getFullYear()
 
     return (
-        <footer className="bg-slate-900 text-slate-300 border-t border-slate-800">
-            <div className="container px-4 md:px-6 mx-auto">
-                {/* Main Footer Content */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 py-12">
-                    {/* Brand Section */}
-                    <div className="space-y-4">
-                        <h3 className="text-2xl font-bold text-white">StreetBite</h3>
-                        <p className="text-sm leading-relaxed">
-                            Discover authentic street food from local vendors. Your ultimate companion for finding the best flavors.
+        <footer className="relative bg-gradient-to-b from-amber-50/30 via-orange-50/50 to-white border-t border-orange-100 overflow-hidden">
+            {/* Animated Background Elements */}
+            <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl animate-float -z-10" style={{ animationDelay: '0s' }} />
+            <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-orange-400/10 rounded-full blur-3xl animate-float -z-10" style={{ animationDelay: '2s' }} />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-gradient-to-r from-amber-200/5 to-orange-200/5 rounded-full blur-3xl -z-20" />
+
+            {/* Decorative top gradient line */}
+            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-primary/60 to-transparent" />
+
+            <div className="container px-4 md:px-6 mx-auto relative z-10">
+                {/* Newsletter Section */}
+                <div className="py-16 border-b border-orange-100">
+                    <div className="max-w-4xl mx-auto text-center">
+                        <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-orange-100 to-amber-100 text-primary text-sm font-bold mb-6 animate-scale-in shadow-sm">
+                            <Sparkles className="h-4 w-4" />
+                            STAY UPDATED
+                        </div>
+                        <h3 className="text-4xl md:text-5xl font-black text-foreground mb-4 leading-tight">
+                            Never Miss a <span className="text-gradient-animate">Delicious Deal</span>
+                        </h3>
+                        <p className="text-muted-foreground mb-10 text-lg max-w-2xl mx-auto leading-relaxed">
+                            Get the latest vendor updates, exclusive offers, and food recommendations delivered to your inbox.
                         </p>
+                        <div className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
+                            <input
+                                type="email"
+                                placeholder="Enter your email"
+                                className="flex-1 px-6 py-4 rounded-full border-2 border-orange-200 bg-white focus:border-primary focus:outline-none focus:ring-4 focus:ring-primary/10 transition-all text-foreground placeholder:text-muted-foreground shadow-sm"
+                            />
+                            <button className="px-8 py-4 rounded-full bg-gradient-to-r from-primary to-orange-600 hover:from-primary/90 hover:to-orange-600/90 text-white font-bold shadow-lg shadow-primary/30 hover:shadow-xl hover:shadow-primary/40 transition-all hover-lift group flex items-center justify-center gap-2">
+                                Subscribe
+                                <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Main Footer Content */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 py-16">
+                    {/* Brand Section */}
+                    <div className="lg:col-span-2 space-y-6">
+                        <div>
+                            <h3 className="text-5xl font-black bg-gradient-to-r from-primary via-orange-500 to-orange-600 bg-clip-text text-transparent mb-2 leading-tight">
+                                StreetBite
+                            </h3>
+                            <p className="text-base font-bold text-primary">Taste the Street</p>
+                        </div>
+                        <p className="text-muted-foreground leading-relaxed max-w-sm text-base">
+                            Discover authentic street food from local vendors. Your ultimate companion for finding the best flavors in your city, connecting food lovers with amazing street food experiences.
+                        </p>
+
+                        {/* Social Links with Premium Styling */}
                         <div className="flex gap-3">
                             <Link
-                                href="#"
+                                href="https://facebook.com"
+                                target="_blank"
+                                rel="noopener noreferrer"
                                 aria-label="Visit our Facebook page"
-                                className="w-9 h-9 rounded-lg bg-slate-800 flex items-center justify-center text-slate-400 hover:bg-orange-600 hover:text-white transition-all"
+                                className="group relative w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-50 to-blue-100 hover:from-blue-600 hover:to-blue-700 flex items-center justify-center text-blue-600 hover:text-white transition-all duration-300 hover:scale-110 hover:shadow-lg hover:shadow-blue-500/30 border border-blue-200 hover:border-blue-600"
                             >
-                                <Facebook className="w-4 h-4" />
+                                <Facebook className="w-6 h-6 relative z-10" />
                             </Link>
                             <Link
-                                href="#"
+                                href="https://instagram.com"
+                                target="_blank"
+                                rel="noopener noreferrer"
                                 aria-label="Follow us on Instagram"
-                                className="w-9 h-9 rounded-lg bg-slate-800 flex items-center justify-center text-slate-400 hover:bg-orange-600 hover:text-white transition-all"
+                                className="group relative w-14 h-14 rounded-2xl bg-gradient-to-br from-pink-50 to-purple-100 hover:from-purple-600 hover:via-pink-600 hover:to-orange-500 flex items-center justify-center text-pink-600 hover:text-white transition-all duration-300 hover:scale-110 hover:shadow-lg hover:shadow-pink-500/30 border border-pink-200 hover:border-transparent"
                             >
-                                <Instagram className="w-4 h-4" />
+                                <Instagram className="w-6 h-6 relative z-10" />
                             </Link>
                             <Link
-                                href="#"
+                                href="https://twitter.com"
+                                target="_blank"
+                                rel="noopener noreferrer"
                                 aria-label="Follow us on Twitter"
-                                className="w-9 h-9 rounded-lg bg-slate-800 flex items-center justify-center text-slate-400 hover:bg-orange-600 hover:text-white transition-all"
+                                className="group relative w-14 h-14 rounded-2xl bg-gradient-to-br from-sky-50 to-blue-100 hover:from-sky-400 hover:to-blue-600 flex items-center justify-center text-sky-600 hover:text-white transition-all duration-300 hover:scale-110 hover:shadow-lg hover:shadow-sky-500/30 border border-sky-200 hover:border-sky-500"
                             >
-                                <Twitter className="w-4 h-4" />
+                                <Twitter className="w-6 h-6 relative z-10" />
                             </Link>
                         </div>
                     </div>
 
                     {/* Quick Links */}
                     <div>
-                        <h4 className="font-semibold text-white mb-4">Quick Links</h4>
-                        <ul className="space-y-2 text-sm">
+                        <h4 className="font-black text-foreground mb-6 text-lg flex items-center gap-2">
+                            <span className="w-1.5 h-7 bg-gradient-to-b from-primary to-orange-600 rounded-full"></span>
+                            Quick Links
+                        </h4>
+                        <ul className="space-y-4">
                             <li>
-                                <Link href="/explore" className="hover:text-orange-500 transition-colors">
+                                <Link href="/explore" className="text-muted-foreground hover:text-primary transition-colors duration-200 flex items-center gap-2 group font-medium">
+                                    <ArrowRight className="h-4 w-4 text-primary/60 group-hover:translate-x-1 transition-transform" />
                                     Explore Food
                                 </Link>
                             </li>
                             <li>
-                                <Link href="/about" className="hover:text-orange-500 transition-colors">
+                                <Link href="/about" className="text-muted-foreground hover:text-primary transition-colors duration-200 flex items-center gap-2 group font-medium">
+                                    <ArrowRight className="h-4 w-4 text-primary/60 group-hover:translate-x-1 transition-transform" />
                                     About Us
                                 </Link>
                             </li>
                             <li>
-                                <Link href="/signup?type=vendor" className="hover:text-orange-500 transition-colors">
+                                <Link href="/signup?type=vendor" className="text-muted-foreground hover:text-primary transition-colors duration-200 flex items-center gap-2 group font-medium">
+                                    <ArrowRight className="h-4 w-4 text-primary/60 group-hover:translate-x-1 transition-transform" />
                                     Become a Vendor
                                 </Link>
                             </li>
                             <li>
-                                <Link href="/contact" className="hover:text-orange-500 transition-colors">
+                                <Link href="/contact" className="text-muted-foreground hover:text-primary transition-colors duration-200 flex items-center gap-2 group font-medium">
+                                    <ArrowRight className="h-4 w-4 text-primary/60 group-hover:translate-x-1 transition-transform" />
                                     Contact
                                 </Link>
                             </li>
@@ -71,25 +126,32 @@ export function Footer() {
 
                     {/* Legal */}
                     <div>
-                        <h4 className="font-semibold text-white mb-4">Legal</h4>
-                        <ul className="space-y-2 text-sm">
+                        <h4 className="font-black text-foreground mb-6 text-lg flex items-center gap-2">
+                            <span className="w-1.5 h-7 bg-gradient-to-b from-primary to-orange-600 rounded-full"></span>
+                            Legal
+                        </h4>
+                        <ul className="space-y-4">
                             <li>
-                                <Link href="/privacy" className="hover:text-orange-500 transition-colors">
+                                <Link href="/privacy" className="text-muted-foreground hover:text-primary transition-colors duration-200 flex items-center gap-2 group font-medium">
+                                    <ArrowRight className="h-4 w-4 text-primary/60 group-hover:translate-x-1 transition-transform" />
                                     Privacy Policy
                                 </Link>
                             </li>
                             <li>
-                                <Link href="/terms" className="hover:text-orange-500 transition-colors">
+                                <Link href="/terms" className="text-muted-foreground hover:text-primary transition-colors duration-200 flex items-center gap-2 group font-medium">
+                                    <ArrowRight className="h-4 w-4 text-primary/60 group-hover:translate-x-1 transition-transform" />
                                     Terms of Service
                                 </Link>
                             </li>
                             <li>
-                                <Link href="/cookies" className="hover:text-orange-500 transition-colors">
+                                <Link href="/cookies" className="text-muted-foreground hover:text-primary transition-colors duration-200 flex items-center gap-2 group font-medium">
+                                    <ArrowRight className="h-4 w-4 text-primary/60 group-hover:translate-x-1 transition-transform" />
                                     Cookie Policy
                                 </Link>
                             </li>
                             <li>
-                                <Link href="/refund" className="hover:text-orange-500 transition-colors">
+                                <Link href="/refund" className="text-muted-foreground hover:text-primary transition-colors duration-200 flex items-center gap-2 group font-medium">
+                                    <ArrowRight className="h-4 w-4 text-primary/60 group-hover:translate-x-1 transition-transform" />
                                     Refund Policy
                                 </Link>
                             </li>
@@ -98,42 +160,76 @@ export function Footer() {
 
                     {/* Contact */}
                     <div>
-                        <h4 className="font-semibold text-white mb-4">Contact Us</h4>
-                        <ul className="space-y-3 text-sm">
-                            <li className="flex items-start gap-2">
-                                <MapPin className="w-4 h-4 text-orange-500 mt-0.5 shrink-0" />
-                                <span>123 Seaface Road, Daman, DD 396210</span>
+                        <h4 className="font-black text-foreground mb-6 text-lg flex items-center gap-2">
+                            <span className="w-1.5 h-7 bg-gradient-to-b from-primary to-orange-600 rounded-full"></span>
+                            Contact Us
+                        </h4>
+                        <ul className="space-y-5">
+                            <li className="flex items-start gap-3 group">
+                                <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-orange-100 to-amber-100 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform shadow-sm">
+                                    <MapPin className="w-5 h-5 text-primary" />
+                                </div>
+                                <div>
+                                    <p className="font-bold text-foreground mb-1 text-sm">Address</p>
+                                    <p className="text-muted-foreground text-sm leading-relaxed">StreetBite HQ<br />Your City, India</p>
+                                </div>
                             </li>
-                            <li className="flex items-center gap-2">
-                                <Phone className="w-4 h-4 text-orange-500 shrink-0" />
-                                <span>+91 98765 43210</span>
+                            <li className="flex items-start gap-3 group">
+                                <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-orange-100 to-amber-100 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform shadow-sm">
+                                    <Phone className="w-5 h-5 text-primary" />
+                                </div>
+                                <div>
+                                    <p className="font-bold text-foreground mb-1 text-sm">Phone</p>
+                                    <a
+                                        href="tel:+911234567890"
+                                        className="text-muted-foreground hover:text-primary transition-colors text-sm font-medium"
+                                    >
+                                        +91 123 456 7890
+                                    </a>
+                                </div>
                             </li>
-                            <li className="flex items-center gap-2">
-                                <Mail className="w-4 h-4 text-orange-500 shrink-0" />
-                                <span>hello@streetbite.com</span>
+                            <li className="flex items-start gap-3 group">
+                                <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-orange-100 to-amber-100 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform shadow-sm">
+                                    <Mail className="w-5 h-5 text-primary" />
+                                </div>
+                                <div>
+                                    <p className="font-bold text-foreground mb-1 text-sm">Email</p>
+                                    <a
+                                        href="mailto:hello@streetbite.com"
+                                        className="text-muted-foreground hover:text-primary transition-colors text-sm font-medium"
+                                    >
+                                        hello@streetbite.com
+                                    </a>
+                                </div>
                             </li>
                         </ul>
                     </div>
                 </div>
 
                 {/* Bottom Bar */}
-                <div className="border-t border-slate-800 py-6">
-                    <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm">
-                        <p className="text-slate-400">
+                <div className="border-t border-orange-100 py-8">
+                    <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+                        <p className="text-muted-foreground text-sm flex items-center gap-2 font-medium">
                             © {currentYear} StreetBite. All rights reserved. Made with{' '}
-                            <Heart className="w-3 h-3 inline fill-orange-500 text-orange-500" /> for food lovers.
+                            <Heart className="w-4 h-4 fill-primary text-primary animate-pulse" /> for food lovers.
                         </p>
-                        <div className="flex gap-6 text-slate-400">
-                            <Link href="/sitemap" className="hover:text-orange-500 transition-colors">
+                        <div className="flex gap-6 text-sm text-muted-foreground font-medium">
+                            <Link href="/sitemap" className="hover:text-primary transition-colors duration-200">
                                 Sitemap
                             </Link>
-                            <Link href="/accessibility" className="hover:text-orange-500 transition-colors">
+                            <Link href="/accessibility" className="hover:text-primary transition-colors duration-200">
                                 Accessibility
+                            </Link>
+                            <Link href="/help" className="hover:text-primary transition-colors duration-200">
+                                Help Center
                             </Link>
                         </div>
                     </div>
                 </div>
             </div>
+
+            {/* Decorative bottom gradient line */}
+            <div className="absolute bottom-0 left-0 right-0 h-2 bg-gradient-to-r from-transparent via-primary/50 to-transparent shadow-lg" />
         </footer>
     )
 }

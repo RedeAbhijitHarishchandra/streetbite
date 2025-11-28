@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { MapListToggle } from '@/components/map-list-toggle'
 import { VendorMap } from '@/components/vendor-map'
-import { MapPin, Search, ChefHat, Flame, Star } from 'lucide-react'
+import { MapPin, Search, ChefHat, Flame, Star, Sparkles } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useUserLocation } from '@/lib/useUserLocation'
 import { vendorApi } from '@/lib/api'
@@ -90,35 +90,45 @@ export default function ExplorePage() {
   )
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-background">
       <Navbar />
 
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-orange-50 via-white to-white py-20 px-6">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <p className="text-primary font-bold text-sm uppercase tracking-widest mb-4">Browse Vendors</p>
-            <h1 className="text-5xl md:text-6xl font-black text-foreground mb-4 text-balance">
-              Explore Street Food <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">Near You</span>
+      <section className="relative py-20 px-6 overflow-hidden">
+        {/* Animated Background */}
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl animate-float -z-10" />
+        <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-secondary/5 rounded-full blur-3xl animate-float -z-10" style={{ animationDelay: '1s' }} />
+
+        <div className="max-w-7xl mx-auto relative z-10">
+          <div className="text-center mb-16 animate-slide-up">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-bold mb-6 animate-scale-in">
+              <Sparkles className="w-4 h-4" />
+              BROWSE VENDORS
+            </div>
+            <h1 className="text-5xl md:text-6xl font-black text-foreground mb-6 text-balance">
+              Explore Street Food <br />
+              <span className="text-gradient-animate text-glow">Near You</span>
             </h1>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">Discover {vendors.length}+ amazing street food vendors in your area</p>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+              Discover {vendors.length}+ amazing street food vendors serving authentic flavors in your area
+            </p>
           </div>
 
           {/* Search Bar */}
-          <div className="max-w-2xl mx-auto mb-12">
-            <div className="relative">
+          <div className="max-w-2xl mx-auto mb-12 animate-slide-up" style={{ animationDelay: '0.1s' }}>
+            <div className="relative group search-bar">
               <Input
                 placeholder="Search vendors or cuisines..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-12 pr-4 py-3 text-base border-2 border-primary/20 focus:border-primary rounded-xl"
+                className="pl-14 pr-4 py-6 text-lg border-2 border-primary/10 focus:border-primary rounded-full shadow-soft group-hover:shadow-elevated transition-all bg-white/80 backdrop-blur-sm"
               />
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-primary/60" size={20} />
+              <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-primary/60 group-hover:text-primary transition-colors" size={24} />
             </div>
           </div>
 
           {/* View Toggle and Filters */}
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6 animate-slide-up" style={{ animationDelay: '0.2s' }}>
             <div className="mb-6">
               <MapListToggle onViewChange={setViewMode} />
             </div>
@@ -129,7 +139,10 @@ export default function ExplorePage() {
                   key={filter.id}
                   onClick={() => setSelectedFilter(filter.id)}
                   variant={selectedFilter === filter.id ? 'default' : 'outline'}
-                  className={selectedFilter === filter.id ? 'bg-primary text-white font-semibold' : 'border-primary/20 text-foreground hover:border-primary/40'}
+                  className={`rounded-full px-6 transition-all hover-lift ${selectedFilter === filter.id
+                      ? 'btn-gradient border-none shadow-md'
+                      : 'border-primary/20 text-foreground hover:border-primary/40 hover:bg-primary/5'
+                    }`}
                 >
                   {filter.label}
                 </Button>
@@ -140,22 +153,31 @@ export default function ExplorePage() {
       </section>
 
       {/* Vendors Grid */}
-      <section className="py-24 px-6">
+      <section className="py-12 px-6 bg-gradient-to-b from-transparent to-muted/20">
         <div className="max-w-7xl mx-auto">
           <div className="mb-12 flex items-center justify-between">
             <div>
-              <h2 className="text-2xl font-bold text-foreground">Results</h2>
+              <h2 className="text-2xl font-bold text-foreground flex items-center gap-2">
+                <Flame className="text-primary w-6 h-6" />
+                Top Results
+              </h2>
               <p className="text-muted-foreground">{filteredVendors.length} vendors found</p>
             </div>
           </div>
 
           {viewMode === 'map' ? (
             // use filtered vendors on the map (search + filters apply)
-            <VendorMap vendors={filteredVendors} onVendorSelect={(v) => setSelectedVendor(v)} />
+            <div className="rounded-3xl overflow-hidden shadow-elevated border-4 border-white">
+              <VendorMap vendors={filteredVendors} onVendorSelect={(v) => setSelectedVendor(v)} />
+            </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {filteredVendors.map((vendor) => (
-                <VendorCard key={vendor.id} id={vendor.id} {...vendor} />
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+              {filteredVendors.map((vendor, index) => (
+                <div key={vendor.id} className="animate-fade-in" style={{ animationDelay: `${index * 0.1}s` }}>
+                  <div className="card-tilt hover-lift h-full">
+                    <VendorCard id={vendor.id} {...vendor} />
+                  </div>
+                </div>
               ))}
             </div>
           )}

@@ -35,6 +35,12 @@ public class User {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    @Column(name = "zodiac_sign")
+    private String zodiacSign;
+
+    @Column(name = "xp")
+    private Integer xp = 0;
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_favorites", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "vendor_id"))
     @com.fasterxml.jackson.annotation.JsonIgnore
@@ -126,5 +132,21 @@ public class User {
 
     public void setFavorites(List<Vendor> favorites) {
         this.favorites = favorites;
+    }
+
+    public String getZodiacSign() {
+        return zodiacSign;
+    }
+
+    public void setZodiacSign(String zodiacSign) {
+        this.zodiacSign = zodiacSign;
+    }
+
+    public Integer getXp() {
+        return xp;
+    }
+
+    public void setXp(Integer xp) {
+        this.xp = xp;
     }
 }

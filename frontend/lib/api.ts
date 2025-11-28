@@ -67,7 +67,7 @@ export const userApi = {
 };
 
 export const vendorApi = {
-  getAll: () => api.get('/vendors/all') as Promise<any>,
+  getAll: () => api.get('/vendors') as Promise<any>,
   getById: (id: string) => api.get(`/vendors/${id}`) as Promise<any>,
   create: (data: any) => api.post('/vendors', data) as Promise<any>,
   update: (id: string, data: any) => api.put(`/vendors/${id}`, data) as Promise<any>,
