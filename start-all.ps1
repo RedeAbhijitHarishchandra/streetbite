@@ -63,8 +63,7 @@ $backendJob = Start-Job -ScriptBlock {
     if ($using:firebaseCred) { $env:GOOGLE_APPLICATION_CREDENTIALS = $using:firebaseCred }
     if ($using:geocodeKey) { $env:GOOGLE_GEOCODING_API_KEY = $using:geocodeKey }
 
-    Set-Location $using:PSScriptRoot
-    Set-Location backend
+    Set-Location (Join-Path $using:PSScriptRoot "backend")
     if (Test-Path ".\mvnw.cmd") {
         .\mvnw.cmd spring-boot:run 2>&1
     }
@@ -76,8 +75,7 @@ $backendJob = Start-Job -ScriptBlock {
 # Start frontend in background
 Write-Host "Starting Frontend (Next.js)..." -ForegroundColor Cyan
 $frontendJob = Start-Job -ScriptBlock {
-    Set-Location $using:PSScriptRoot
-    Set-Location "frontend"
+    Set-Location (Join-Path $using:PSScriptRoot "frontend")
     # $env:NEXT_PUBLIC_BACKEND_URL = "http://localhost:8080"
     npm run dev 2>&1
 }

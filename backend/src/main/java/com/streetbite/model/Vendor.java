@@ -30,6 +30,12 @@ public class Vendor {
     private String phone;
     private String hours;
 
+    @Column(name = "banner_image_url")
+    private String bannerImageUrl;
+
+    @Column(name = "display_image_url")
+    private String displayImageUrl;
+
     @Column(name = "is_active")
     private boolean isActive = true;
 
@@ -196,5 +202,21 @@ public class Vendor {
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public String getBannerImageUrl() {
+        return bannerImageUrl;
+    }
+
+    public void setBannerImageUrl(String bannerImageUrl) {
+        this.bannerImageUrl = bannerImageUrl;
+    }
+
+    public String getDisplayImageUrl() {
+        return displayImageUrl;
+    }
+
+    public void setDisplayImageUrl(String displayImageUrl) {
+        this.displayImageUrl = displayImageUrl;
     }
 }

@@ -50,7 +50,7 @@ Write-Host "Starting backend server..." -ForegroundColor Cyan
 Write-Host ""
 
 # Navigate to backend and start (use mvnw if present)
-Set-Location backend
+Set-Location "C:\Users\patil\OneDrive\Desktop\StreetBite\StreetBite\backend"
 if (Test-Path ".\mvnw.cmd") {
 	.\mvnw.cmd spring-boot:run
 }

@@ -1,11 +1,16 @@
+'use client'
+
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { MapPin, Search, Star, ChefHat, ArrowRight, Sparkles, TrendingUp, Clock } from 'lucide-react'
 import { Logo } from '@/components/logo'
 import { Navbar } from '@/components/navbar'
 import { Footer } from '@/components/footer'
+import { useCityName } from '@/hooks/use-city-name'
 
 export default function Home() {
+  const { cityName, loading } = useCityName()
+
   return (
     <div className="min-h-screen flex flex-col bg-background overflow-hidden">
       {/* Enhanced Navbar */}
@@ -27,7 +32,7 @@ export default function Home() {
                 <span className="relative inline-flex rounded-full h-3 w-3 bg-primary shadow-primary"></span>
               </span>
               <span className="bg-gradient-to-r from-primary to-orange-600 bg-clip-text text-transparent">
-                Live in Nashik
+                Live in {loading ? '...' : (cityName?.trim() ? cityName : 'your city')}
               </span>
             </div>
 
@@ -158,7 +163,7 @@ export default function Home() {
                   Ready to Start Your<br />Food Journey?
                 </h2>
                 <p className="text-xl md:text-2xl opacity-95 mb-10 max-w-2xl mx-auto font-medium">
-                  Join <span className="font-bold">10,000+ food lovers</span> in Nashik discovering hidden gems every day.
+                  Join <span className="font-bold">10,000+ food lovers</span> {loading ? 'discovering' : (cityName?.trim() ? `in ${cityName} discovering` : 'discovering')} hidden gems every day.
                 </p>
                 <Link href="/signup">
                   <Button size="lg" className="h-16 px-12 rounded-full text-lg font-bold bg-white text-primary hover:bg-white/95 shadow-floating hover-lift hover-glow group">

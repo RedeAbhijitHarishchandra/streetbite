@@ -19,6 +19,37 @@ public class VendorController {
     @Autowired
     private com.streetbite.service.VendorSearchService vendorSearchService;
 
+    /**
+     * Validates if a string is a valid URL
+     * 
+     * @param url The URL string to validate
+     * @return true if valid, false otherwise
+     */
+    private boolean isValidUrl(String url) {
+        if (url == null || url.trim().isEmpty()) {
+            return false;
+        }
+
+        // Check length constraint (2048 is common max URL length)
+        if (url.length() > 2048) {
+            return false;
+        }
+
+        // Allow data URLs for base64 encoded images
+        if (url.startsWith("data:image/")) {
+            return true;
+        }
+
+        // Validate HTTP/HTTPS URLs
+        try {
+            java.net.URI uri = new java.net.URI(url);
+            String protocol = uri.getScheme();
+            return "http".equals(protocol) || "https".equals(protocol);
+        } catch (java.net.URISyntaxException e) {
+            return false;
+        }
+    }
+
     @GetMapping("/search")
     public ResponseEntity<List<Vendor>> searchVendors(
             @RequestParam double lat,
@@ -42,6 +73,14 @@ public class VendorController {
     @PostMapping
     public ResponseEntity<?> createVendor(@RequestBody Vendor vendor) {
         try {
+            // Validate image URLs before creating
+            if (vendor.getBannerImageUrl() != null && !isValidUrl(vendor.getBannerImageUrl())) {
+                return ResponseEntity.badRequest().body(Map.of("error", "Invalid banner image URL"));
+            }
+            if (vendor.getDisplayImageUrl() != null && !isValidUrl(vendor.getDisplayImageUrl())) {
+                return ResponseEntity.badRequest().body(Map.of("error", "Invalid display image URL"));
+            }
+
             Vendor savedVendor = vendorService.saveVendor(vendor);
             return ResponseEntity.ok(savedVendor);
         } catch (Exception e) {
@@ -69,6 +108,24 @@ public class VendorController {
                         existingVendor.setLongitude(vendorUpdates.getLongitude());
                     if (vendorUpdates.getHours() != null)
                         existingVendor.setHours(vendorUpdates.getHours());
+
+                    // Validate and update banner image URL
+                    if (vendorUpdates.getBannerImageUrl() != null) {
+                        if (isValidUrl(vendorUpdates.getBannerImageUrl())) {
+                            existingVendor.setBannerImageUrl(vendorUpdates.getBannerImageUrl());
+                        } else {
+                            return ResponseEntity.badRequest().body(Map.of("error", "Invalid banner image URL"));
+                        }
+                    }
+
+                    // Validate and update display image URL
+                    if (vendorUpdates.getDisplayImageUrl() != null) {
+                        if (isValidUrl(vendorUpdates.getDisplayImageUrl())) {
+                            existingVendor.setDisplayImageUrl(vendorUpdates.getDisplayImageUrl());
+                        } else {
+                            return ResponseEntity.badRequest().body(Map.of("error", "Invalid display image URL"));
+                        }
+                    }
 
                     Vendor updated = vendorService.saveVendor(existingVendor);
                     return ResponseEntity.ok(updated);

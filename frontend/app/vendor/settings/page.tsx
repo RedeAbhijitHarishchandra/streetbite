@@ -27,8 +27,13 @@ export default function Settings() {
     cuisine: '',
     latitude: '',
     longitude: '',
-    galleryImages: [] as string[],
+    bannerImageUrl: '',
+    displayImageUrl: '',
   })
+
+  // Image previews
+  const [bannerPreview, setBannerPreview] = useState<string | null>(null)
+  const [displayPreview, setDisplayPreview] = useState<string | null>(null)
 
   const [settings, setSettings] = useState({
     autoAcceptOrders: true,
@@ -48,9 +53,7 @@ export default function Settings() {
         }
 
         const user = JSON.parse(userStr)
-        // Use vendorId from user object
         const vid = user.vendorId || user.id
-
 
         if (!vid) {
           throw new Error('Vendor ID is missing')
@@ -65,10 +68,15 @@ export default function Settings() {
           hours: vendor.hours || '',
           description: vendor.description || '',
           cuisine: vendor.cuisine || '',
-          latitude: vendor.location?.latitude?.toString() || '',
-          longitude: vendor.location?.longitude?.toString() || '',
-          galleryImages: vendor.galleryImages || [],
+          latitude: vendor.latitude?.toString() || '',
+          longitude: vendor.longitude?.toString() || '',
+          bannerImageUrl: vendor.bannerImageUrl || '',
+          displayImageUrl: vendor.displayImageUrl || '',
         })
+
+        if (vendor.bannerImageUrl) setBannerPreview(vendor.bannerImageUrl)
+        if (vendor.displayImageUrl) setDisplayPreview(vendor.displayImageUrl)
+
       } catch (err: any) {
         setError(err.message || 'Failed to load vendor data')
       } finally {
@@ -79,25 +87,41 @@ export default function Settings() {
     loadVendorData()
   }, [])
 
+  const handleImageUpload = (file: File, type: 'banner' | 'display') => {
+    if (!file) return
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      alert('Please select an image file')
+      return
+    }
+
+    // Validate file size (5MB max)
+    if (file.size > 5 * 1024 * 1024) {
+      alert('Image size must be less than 5MB')
+      return
+    }
+
+    // Convert to base64
+    const reader = new FileReader()
+    reader.onloadend = () => {
+      const base64 = reader.result as string
+      if (type === 'banner') {
+        setBannerPreview(base64)
+        setVendorData(prev => ({ ...prev, bannerImageUrl: base64 }))
+      } else {
+        setDisplayPreview(base64)
+        setVendorData(prev => ({ ...prev, displayImageUrl: base64 }))
+      }
+    }
+    reader.readAsDataURL(file)
+  }
+
   const validateForm = () => {
-    // Validate required fields
     if (!vendorData.name || vendorData.name.trim().length < 3) {
       setError('Business name must be at least 3 characters')
       return false
     }
-
-    // Validate phone format (10 digits or with country code)
-    if (vendorData.phone && !/^(\+\d{1,3}[- ]?)?\d{10}$/.test(vendorData.phone.replace(/[- ]/g, ''))) {
-      setError('Phone number must be 10 digits (e.g., 9876543210 or +91-9876543210)')
-      return false
-    }
-
-    // Validate description length
-    if (vendorData.description && vendorData.description.length > 500) {
-      setError('Description must be less than 500 characters')
-      return false
-    }
-
     return true
   }
 
@@ -116,7 +140,6 @@ export default function Settings() {
       setError(null)
       setSuccess(false)
 
-      // Prepare vendor data with location
       const updateData: any = {
         name: vendorData.name,
         address: vendorData.address,
@@ -124,22 +147,23 @@ export default function Settings() {
         hours: vendorData.hours,
         description: vendorData.description,
         cuisine: vendorData.cuisine,
-        galleryImages: vendorData.galleryImages.filter(url => url.trim() !== ''),
+        bannerImageUrl: vendorData.bannerImageUrl,
+        displayImageUrl: vendorData.displayImageUrl,
       }
 
-      // Add location if both lat and lng are provided
+      // Add latitude/longitude as direct fields (backend expects this format)
       if (vendorData.latitude && vendorData.longitude) {
-        updateData.location = {
-          latitude: parseFloat(vendorData.latitude),
-          longitude: parseFloat(vendorData.longitude)
-        }
+        updateData.latitude = parseFloat(vendorData.latitude)
+        updateData.longitude = parseFloat(vendorData.longitude)
       }
 
+      console.log('Sending update data:', updateData)
       await vendorApi.update(vendorId, updateData)
       setSuccess(true)
       setTimeout(() => setSuccess(false), 3000)
     } catch (err: any) {
-      setError(err.message || 'Failed to save settings')
+      console.error('Save error:', err)
+      setError(err.response?.data?.message || err.message || 'Failed to save settings')
     } finally {
       setSaving(false)
     }
@@ -154,7 +178,7 @@ export default function Settings() {
   }
 
   return (
-    <div className="p-8 space-y-6 max-w-4xl">
+    <div className="p-8 space-y-6 max-w-4xl overflow-x-hidden">
       <div>
         <h1 className="text-3xl font-bold">Settings</h1>
         <p className="text-muted-foreground mt-1">Manage your vendor profile and preferences</p>
@@ -179,19 +203,80 @@ export default function Settings() {
           <CardDescription>Update your business information</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
-          {/* Logo Upload */}
-          <div>
-            <Label>Business Logo</Label>
-            <div className="mt-3 border-2 border-dashed border-border rounded-lg p-8 text-center cursor-pointer hover:bg-accent transition-colors">
-              <Upload className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
-              <p className="text-sm font-medium">Drop your logo here or click to upload</p>
-              <p className="text-xs text-muted-foreground">PNG, JPG up to 5MB</p>
+          <div className="grid md:grid-cols-2 gap-8">
+            {/* Display Image (Logo) Upload */}
+            <div>
+              <Label className="text-base font-semibold">Business Logo</Label>
+              <p className="text-sm text-muted-foreground mb-4">This will be displayed on your vendor card.</p>
+
+              <label className="block cursor-pointer group relative w-fit">
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0]
+                    if (file) handleImageUpload(file, 'display')
+                  }}
+                />
+
+                {displayPreview ? (
+                  <div className="relative w-40 h-40 rounded-2xl overflow-hidden border-2 border-border shadow-sm group-hover:border-primary/50 transition-colors">
+                    <img src={displayPreview} alt="Display preview" className="w-full h-full object-cover" />
+                    <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-200 backdrop-blur-[2px]">
+                      <Upload className="w-6 h-6 text-white mb-2" />
+                      <span className="text-white text-xs font-medium">Change Logo</span>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="w-40 h-40 border-2 border-dashed border-border rounded-2xl flex flex-col items-center justify-center text-center p-4 hover:bg-accent/50 hover:border-primary/50 transition-all duration-200">
+                    <div className="w-10 h-10 bg-accent rounded-full flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                      <Upload className="w-5 h-5 text-muted-foreground group-hover:text-primary" />
+                    </div>
+                    <p className="text-xs font-medium text-foreground">Upload Logo</p>
+                  </div>
+                )}
+              </label>
+            </div>
+
+            {/* Banner Image Upload */}
+            <div>
+              <Label className="text-base font-semibold">Banner Image</Label>
+              <p className="text-sm text-muted-foreground mb-4">This will be the background on your details page.</p>
+
+              <label className="block cursor-pointer group relative">
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0]
+                    if (file) handleImageUpload(file, 'banner')
+                  }}
+                />
+
+                {bannerPreview ? (
+                  <div className="relative w-full h-40 rounded-2xl overflow-hidden border-2 border-border shadow-sm group-hover:border-primary/50 transition-colors">
+                    <img src={bannerPreview} alt="Banner preview" className="w-full h-full object-cover" />
+                    <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-200 backdrop-blur-[2px]">
+                      <Upload className="w-8 h-8 text-white mb-2" />
+                      <span className="text-white text-sm font-medium">Change Banner</span>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="w-full h-40 border-2 border-dashed border-border rounded-2xl flex flex-col items-center justify-center text-center p-4 hover:bg-accent/50 hover:border-primary/50 transition-all duration-200">
+                    <div className="w-12 h-12 bg-accent rounded-full flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                      <Upload className="w-6 h-6 text-muted-foreground group-hover:text-primary" />
+                    </div>
+                    <p className="text-sm font-medium text-foreground">Upload Banner Image</p>
+                    <p className="text-xs text-muted-foreground mt-1">1920x1080 recommended</p>
+                  </div>
+                )}
+              </label>
             </div>
           </div>
 
           <Separator />
-
-          {/* Business Details */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <Label htmlFor="name">Business Name</Label>
@@ -344,44 +429,6 @@ export default function Settings() {
             />
           </div>
 
-          {/* Gallery Images */}
-          <div className="md:col-span-2 space-y-3">
-            <Label>Gallery Images</Label>
-            <p className="text-xs text-muted-foreground mb-2">Add URLs of images to showcase your stall and food.</p>
-
-            {vendorData.galleryImages.map((url, index) => (
-              <div key={index} className="flex gap-2">
-                <Input
-                  value={url}
-                  onChange={(e) => {
-                    const newImages = [...vendorData.galleryImages]
-                    newImages[index] = e.target.value
-                    setVendorData({ ...vendorData, galleryImages: newImages })
-                  }}
-                  placeholder="https://example.com/image.jpg"
-                />
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={() => {
-                    const newImages = vendorData.galleryImages.filter((_, i) => i !== index)
-                    setVendorData({ ...vendorData, galleryImages: newImages })
-                  }}
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-trash-2"><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /><line x1="10" x2="10" y1="11" y2="17" /><line x1="14" x2="14" y1="11" y2="17" /></svg>
-                </Button>
-              </div>
-            ))}
-
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => setVendorData({ ...vendorData, galleryImages: [...vendorData.galleryImages, ''] })}
-              className="w-full border-dashed"
-            >
-              + Add Image URL
-            </Button>
-          </div>
 
           <Button
             onClick={handleSave}
