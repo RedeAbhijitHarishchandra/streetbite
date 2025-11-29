@@ -87,16 +87,19 @@ export function DailyPoll() {
     const totalVotes = currentPoll.options.reduce((sum, opt) => sum + opt.votes, 0);
 
     return (
-        <Card className="hover:shadow-lg transition-shadow border-primary/10">
-            <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                    <TrendingUp className="w-5 h-5 text-blue-500" />
-                    Daily Poll
+        <Card className="bg-[#1a103c] border-none shadow-xl relative overflow-hidden ring-1 ring-white/10">
+            {/* Background Accents */}
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-orange-500 via-pink-500 to-purple-500" />
+
+            <CardHeader className="pb-2">
+                <CardTitle className="flex items-center gap-2 text-white">
+                    <TrendingUp className="w-5 h-5 text-orange-400" />
+                    <span className="tracking-tight">Daily Poll</span>
                 </CardTitle>
             </CardHeader>
             <CardContent>
-                <p className="mb-4 text-muted-foreground font-medium">{currentPoll.question}</p>
-                <div className="space-y-2">
+                <p className="mb-5 text-indigo-100 font-medium leading-relaxed">{currentPoll.question}</p>
+                <div className="space-y-3">
                     {currentPoll.options.map((option, index) => {
                         const percentage = totalVotes > 0 ? Math.round((option.votes / totalVotes) * 100) : 0;
                         const isSelected = selectedOption === index;
@@ -106,23 +109,27 @@ export function DailyPoll() {
                                 key={index}
                                 onClick={() => handleVote(index)}
                                 disabled={hasVoted}
-                                className={`w-full text-left px-4 py-3 rounded-lg border-2 transition-all relative overflow-hidden ${hasVoted
+                                className={`w-full text-left px-4 py-3 rounded-xl border transition-all relative overflow-hidden group ${hasVoted
                                     ? isSelected
-                                        ? "border-orange-500 bg-orange-50"
-                                        : "border-gray-200 bg-gray-50"
-                                    : "border-gray-200 hover:border-orange-300 hover:bg-orange-50 cursor-pointer"
+                                        ? "border-orange-500/50 bg-orange-500/10"
+                                        : "border-white/5 bg-white/5"
+                                    : "border-white/10 hover:border-orange-400/50 hover:bg-white/5 cursor-pointer"
                                     }`}
                             >
                                 {hasVoted && (
                                     <div
-                                        className="absolute top-0 left-0 h-full bg-orange-100/50 transition-all duration-500"
+                                        className={`absolute top-0 left-0 h-full transition-all duration-700 ease-out ${isSelected ? "bg-gradient-to-r from-orange-500/20 to-pink-500/20" : "bg-white/5"}`}
                                         style={{ width: `${percentage}%` }}
                                     />
                                 )}
                                 <div className="relative z-10 flex justify-between items-center">
-                                    <span className="font-medium text-gray-800">{option.text}</span>
+                                    <span className={`font-medium transition-colors ${isSelected ? "text-orange-200" : "text-gray-300 group-hover:text-white"}`}>
+                                        {option.text}
+                                    </span>
                                     {hasVoted && (
-                                        <span className="text-sm font-bold text-orange-600">{percentage}%</span>
+                                        <span className={`text-sm font-bold ${isSelected ? "text-orange-400" : "text-indigo-300"}`}>
+                                            {percentage}%
+                                        </span>
                                     )}
                                 </div>
                             </button>
@@ -130,8 +137,8 @@ export function DailyPoll() {
                     })}
                 </div>
                 {hasVoted && (
-                    <p className="text-xs text-muted-foreground mt-3 text-center">
-                        {totalVotes} votes • New poll tomorrow!
+                    <p className="text-[10px] text-indigo-300/60 mt-4 text-center uppercase tracking-widest font-medium">
+                        {totalVotes} votes • New poll tomorrow
                     </p>
                 )}
             </CardContent>
