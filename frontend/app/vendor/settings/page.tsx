@@ -147,8 +147,14 @@ export default function Settings() {
         hours: vendorData.hours,
         description: vendorData.description,
         cuisine: vendorData.cuisine,
-        bannerImageUrl: vendorData.bannerImageUrl,
-        displayImageUrl: vendorData.displayImageUrl,
+      }
+
+      // Only include images if they have values (empty strings trigger backend validation errors)
+      if (vendorData.bannerImageUrl) {
+        updateData.bannerImageUrl = vendorData.bannerImageUrl
+      }
+      if (vendorData.displayImageUrl) {
+        updateData.displayImageUrl = vendorData.displayImageUrl
       }
 
       // Add latitude/longitude as direct fields (backend expects this format)

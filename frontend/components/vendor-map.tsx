@@ -156,28 +156,72 @@ export function VendorMap({ vendors = [], onVendorSelect }: { vendors: Vendor[],
         title: 'Your Location',
         icon: {
           path: gm.SymbolPath.CIRCLE,
-          scale: 8,
-          fillColor: '#4285F4',
+          scale: 10,
+          fillColor: '#3B82F6', // Blue-500
           fillOpacity: 1,
           strokeColor: '#FFFFFF',
-          strokeWeight: 2,
+          strokeWeight: 3,
         },
-        zIndex: 1000, // Ensure user marker is on top
+        zIndex: 1000,
       })
+
+      // Add a pulsing circle effect using a custom overlay or just a second larger marker with opacity
+      const pulseMarker = new gm.Marker({
+        position: { lat: userLocation.lat, lng: userLocation.lng },
+        map: mapInstance.current,
+        icon: {
+          path: gm.SymbolPath.CIRCLE,
+          scale: 20,
+          fillColor: '#3B82F6',
+          fillOpacity: 0.2,
+          strokeWeight: 0,
+        },
+        zIndex: 999,
+      })
+
+      // Simple animation loop for pulse
+      let scale = 20;
+      let growing = true;
+      const animatePulse = () => {
+        if (!mapInstance.current) return;
+        if (growing) {
+          scale += 0.5;
+          if (scale >= 30) growing = false;
+        } else {
+          scale -= 0.5;
+          if (scale <= 20) growing = true;
+        }
+        pulseMarker.setIcon({
+          path: gm.SymbolPath.CIRCLE,
+          scale: scale,
+          fillColor: '#3B82F6',
+          fillOpacity: 0.2 - ((scale - 20) / 50), // Fade out as it grows
+          strokeWeight: 0,
+        });
+        requestAnimationFrame(animatePulse);
+      };
+      animatePulse();
+
       markersRef.current.push(userMarker)
+      markersRef.current.push(pulseMarker)
     }
 
     // Custom vendor marker icon
     const vendorIcon = {
       url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
-        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="40" viewBox="0 0 32 40">
-          <path d="M16 0C9.4 0 4 5.4 4 12c0 8 12 28 12 28s12-20 12-28c0-6.6-5.4-12-12-12z" fill="#F97316"/>
+        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="48" viewBox="0 0 32 40">
+          <defs>
+            <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+              <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#000000" flood-opacity="0.3"/>
+            </filter>
+          </defs>
+          <path d="M16 0C9.4 0 4 5.4 4 12c0 8 12 28 12 28s12-20 12-28c0-6.6-5.4-12-12-12z" fill="#F97316" filter="url(#shadow)"/>
           <circle cx="16" cy="12" r="6" fill="white"/>
           <path d="M14 10h4v4h-4z M12 10h1v4h-1z M19 10h1v4h-1z" fill="#F97316"/>
         </svg>
       `),
-      scaledSize: new gm.Size(32, 40),
-      anchor: new gm.Point(16, 40),
+      scaledSize: new gm.Size(40, 48),
+      anchor: new gm.Point(20, 48),
     }
 
     vendors.forEach((v) => {
@@ -196,7 +240,7 @@ export function VendorMap({ vendors = [], onVendorSelect }: { vendors: Vendor[],
       marker.addListener('mouseover', () => {
         marker.setIcon({
           ...vendorIcon,
-          scaledSize: new gm.Size(36, 44),
+          scaledSize: new gm.Size(44, 52),
         })
         marker.setZIndex(999)
       })
@@ -213,10 +257,11 @@ export function VendorMap({ vendors = [], onVendorSelect }: { vendors: Vendor[],
 
         // build simple info window content
         const content = `
-          <div style="max-width:240px;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif">
-            <strong style="font-size:14px">${escapeHtml(String(v.name))}</strong>
-            ${v.cuisine ? `<div style="font-size:12px;color:#666;margin-top:4px">${escapeHtml(String(v.cuisine))}</div>` : ''}
-            ${v.description ? `<div style="font-size:12px;color:#444;margin-top:6px">${escapeHtml(String(v.description))}</div>` : ''}
+          <div style="padding: 8px; min-width: 200px; font-family: 'Inter', sans-serif;">
+            <h3 style="margin: 0 0 4px 0; color: #111; font-size: 16px; font-weight: 700;">${escapeHtml(String(v.name))}</h3>
+            ${v.cuisine ? `<div style="font-size: 13px; color: #F97316; font-weight: 600; margin-bottom: 4px;">${escapeHtml(String(v.cuisine))}</div>` : ''}
+            ${v.description ? `<div style="font-size: 12px; color: #666; line-height: 1.4; margin-bottom: 8px;">${escapeHtml(String(v.description))}</div>` : ''}
+            <div style="font-size: 12px; color: #3B82F6; font-weight: 600; cursor: pointer;">Click for details &rarr;</div>
           </div>
         `
         try {

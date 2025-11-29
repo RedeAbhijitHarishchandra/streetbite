@@ -101,7 +101,7 @@ export default function SignUpPage() {
               <Logo />
             </div>
             <h1 className="text-3xl font-bold mb-2">
-              <span className="text-gradient-animate text-glow">Join StreetBite</span>
+              <span className="text-shine-amber">Join StreetBite</span>
             </h1>
             <p className="text-muted-foreground">Choose your account type to get started</p>
           </div>

@@ -16,7 +16,7 @@ export default function AboutPage() {
       <section className="bg-gradient-to-br from-orange-50 via-white to-white py-20 px-6">
         <div className="max-w-4xl mx-auto text-center">
           <h1 className="text-5xl md:text-6xl font-black text-foreground mb-6 text-balance">
-            About <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">StreetBite</span>
+            About <span className="text-shine-amber">StreetBite</span>
           </h1>
           <p className="text-2xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
             Connecting food lovers with authentic street food vendors around the world

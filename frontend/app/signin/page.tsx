@@ -80,7 +80,7 @@ export default function SignInPage() {
               <Logo />
             </div>
             <h1 className="text-3xl font-bold mb-2">
-              <span className="text-gradient-animate text-glow">Welcome Back</span>
+              <span className="text-shine-amber">Welcome Back</span>
             </h1>
             <p className="text-muted-foreground">Sign in to discover amazing street food near you</p>
           </div>

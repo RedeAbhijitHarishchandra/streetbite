@@ -31,7 +31,7 @@ export default function Home() {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-3 w-3 bg-primary shadow-primary"></span>
               </span>
-              <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+              <span className="text-shine-amber">
                 Live in {loading ? '...' : (cityName?.trim() ? cityName : 'your city')}
               </span>
             </div>
@@ -40,7 +40,7 @@ export default function Home() {
             <h1 className="text-5xl md:text-7xl lg:text-8xl font-black mb-6 tracking-tight text-foreground leading-[1.1] animate-slide-up">
               Discover the Best <br />
               <span className="relative inline-block">
-                <span className="text-gradient-animate text-glow steam">
+                <span className="text-shine-amber steam">
                   Street Food
                 </span>
                 <div className="absolute -top-8 -right-10 animate-float" style={{ animationDelay: '0.5s' }}>
@@ -147,7 +147,7 @@ export default function Home() {
         {/* Enhanced CTA Section */}
         <section className="py-24">
           <div className="container mx-auto px-4">
-            <div className="relative bg-gradient-to-br from-primary via-secondary to-accent rounded-[3rem] p-12 md:p-20 text-center text-primary-foreground overflow-hidden shadow-elevated animate-scale-in">
+            <div className="relative bg-gradient-to-br from-orange-500 via-amber-500 to-yellow-400 rounded-[3rem] p-12 md:p-20 text-center text-primary-foreground overflow-hidden shadow-elevated animate-scale-in">
               {/* Background Pattern */}
               <div className="absolute inset-0 opacity-10">
                 <div className="absolute top-0 right-0 w-64 h-64 bg-white rounded-full blur-3xl"></div>

@@ -81,7 +81,7 @@ export default function OffersPage() {
             <span className="text-sm font-semibold text-primary">Hot Deals This Week</span>
           </div>
           <h1 className="text-5xl md:text-6xl font-black text-foreground mb-4 text-balance">
-            Exclusive Offers from <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">Street Vendors</span>
+            Exclusive Offers from <span className="text-shine-amber">Street Vendors</span>
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">Save big on your favorite street food with limited-time deals from our community vendors</p>
         </div>

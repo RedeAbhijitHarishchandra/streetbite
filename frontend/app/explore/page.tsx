@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { MapListToggle } from '@/components/map-list-toggle'
 import { VendorMap } from '@/components/vendor-map'
+import { VendorDetailsSheet } from '@/components/vendor-details-sheet'
 import { MapPin, Search, ChefHat, Flame, Star, Sparkles } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useUserLocation } from '@/lib/useUserLocation'
@@ -107,7 +108,7 @@ export default function ExplorePage() {
             </div>
             <h1 className="text-5xl md:text-6xl font-black text-foreground mb-6 text-balance">
               Explore Street Food <br />
-              <span className="text-gradient-animate text-glow">Near You</span>
+              <span className="text-shine-amber">Near You</span>
             </h1>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
               Discover {vendors.length}+ amazing street food vendors serving authentic flavors in your area
@@ -140,8 +141,8 @@ export default function ExplorePage() {
                   onClick={() => setSelectedFilter(filter.id)}
                   variant={selectedFilter === filter.id ? 'default' : 'outline'}
                   className={`rounded-full px-6 transition-all hover-lift ${selectedFilter === filter.id
-                      ? 'btn-gradient border-none shadow-md'
-                      : 'border-primary/20 text-foreground hover:border-primary/40 hover:bg-primary/5'
+                    ? 'btn-gradient border-none shadow-md'
+                    : 'border-primary/20 text-foreground hover:border-primary/40 hover:bg-primary/5'
                     }`}
                 >
                   {filter.label}
@@ -186,6 +187,13 @@ export default function ExplorePage() {
 
       {/* Footer */}
       <Footer />
+
+      {/* Vendor Details Sheet */}
+      <VendorDetailsSheet
+        vendor={selectedVendor}
+        open={!!selectedVendor}
+        onOpenChange={(open) => !open && setSelectedVendor(null)}
+      />
     </div>
   )
 }

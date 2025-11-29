@@ -63,7 +63,7 @@ export default function CommunityPage() {
                             COMMUNITY
                         </div>
                         <h1 className="text-3xl md:text-4xl font-black text-foreground mb-2">
-                            Join the <span className="text-gradient-animate">Foodie Tribe</span>
+                            Join the <span className="text-shine-amber">Foodie Tribe</span>
                         </h1>
                         <p className="text-muted-foreground">
                             Play games, vote on polls, and connect with street food lovers.
