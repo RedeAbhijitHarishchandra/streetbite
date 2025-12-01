@@ -13,7 +13,8 @@ import { EventsCalendar } from '@/components/EventsCalendar'
 import { Leaderboard } from '@/components/Leaderboard'
 import { FoodPersonalityQuiz } from '@/components/FoodPersonalityQuiz'
 import { UserStats } from '@/components/UserStats'
-import { MessageSquare, Award, Gamepad2, Camera, CalendarDays, TrendingUp, Heart, Send, X, ThumbsUp, Search } from 'lucide-react'
+import { CommunityMap } from '@/components/CommunityMap'
+import { MessageSquare, Award, Gamepad2, Camera, CalendarDays, TrendingUp, Heart, Send, X, ThumbsUp, Search, Sparkles, Flame, MapPin } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -28,12 +29,12 @@ const VENDORS = [
 ];
 
 const DISCUSSIONS = [
-    { id: 1, text: "What's your go-to midnight snack?", replies: 142, likes: 89, author: "foodie_raj", time: "2h ago" },
-    { id: 2, text: "Best street food in Pune?", replies: 89, likes: 56, author: "pune_explorer", time: "5h ago" },
-    { id: 3, text: "Spicy vs. Sweet - what's your vibe?", replies: 67, likes: 112, author: "taste_master", time: "1d ago" },
-    { id: 4, text: "Hidden gem near you?", replies: 234, likes: 178, author: "street_hunter", time: "3h ago" },
-    { id: 5, text: "Favorite chaat combination?", replies: 156, likes: 134, author: "chaat_lover", time: "12h ago" },
-    { id: 6, text: "Rainy day food mood?", replies: 198, likes: 201, author: "monsoon_foodie", time: "6h ago" }
+    { id: 1, text: "What's your go-to midnight snack?", replies: 142, likes: 89, author: "foodie_raj", time: "2h ago", tags: ["Late Night", "Snacks"] },
+    { id: 2, text: "Best street food in Pune?", replies: 89, likes: 56, author: "pune_explorer", time: "5h ago", tags: ["Pune", "Recommendations"] },
+    { id: 3, text: "Spicy vs. Sweet - what's your vibe?", replies: 67, likes: 112, author: "taste_master", time: "1d ago", tags: ["Debate"] },
+    { id: 4, text: "Hidden gem near you?", replies: 234, likes: 178, author: "street_hunter", time: "3h ago", tags: ["Discovery"] },
+    { id: 5, text: "Favorite chaat combination?", replies: 156, likes: 134, author: "chaat_lover", time: "12h ago", tags: ["Chaat"] },
+    { id: 6, text: "Rainy day food mood?", replies: 198, likes: 201, author: "monsoon_foodie", time: "6h ago", tags: ["Weather", "Comfort Food"] }
 ];
 
 const SAMPLE_COMMENTS = [
@@ -99,97 +100,165 @@ export default function CommunityPage() {
     ];
 
     return (
-        <div className="min-h-screen bg-gray-50">
+        <div className="min-h-screen bg-gray-50/50">
             <Navbar />
 
-            {/* Simple Hero */}
-            <section className="bg-white border-b">
-                <div className="max-w-6xl mx-auto px-6 py-8">
-                    <h1 className="text-3xl font-black text-gray-900">Community</h1>
-                    <p className="text-gray-600 mt-1">Connect, compete, and discover with fellow foodies</p>
+            {/* Dynamic Hero Section */}
+            <section className="relative pt-32 pb-20 overflow-hidden bg-white">
+                {/* Background Pattern */}
+                <div className="absolute inset-0 opacity-[0.03]" style={{
+                    backgroundImage: 'radial-gradient(#F97316 1px, transparent 1px)',
+                    backgroundSize: '30px 30px'
+                }}></div>
+
+                {/* Floating Elements */}
+                <div className="absolute top-20 left-10 animate-float" style={{ animationDelay: '0s' }}>
+                    <span className="text-4xl">🍔</span>
+                </div>
+                <div className="absolute bottom-20 right-10 animate-float" style={{ animationDelay: '1.5s' }}>
+                    <span className="text-4xl">🍕</span>
+                </div>
+                <div className="absolute top-40 right-20 animate-float" style={{ animationDelay: '0.8s' }}>
+                    <span className="text-4xl">🌮</span>
+                </div>
+
+                <div className="max-w-6xl mx-auto px-6 relative z-10 text-center">
+                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-orange-50 border border-orange-100 text-orange-600 text-sm font-bold mb-6 animate-scale-in">
+                        <Flame className="w-4 h-4 fill-orange-500 animate-pulse" />
+                        500+ Foodies Active Now
+                    </div>
+
+                    <h1 className="text-5xl md:text-7xl font-black mb-6 tracking-tight leading-tight animate-slide-up">
+                        The <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-red-600 drop-shadow-[0_0_15px_rgba(249,115,22,0.5)]">Foodie</span> Social
+                    </h1>
+
+                    <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-10 animate-slide-up" style={{ animationDelay: '0.1s' }}>
+                        Connect with local food lovers, compete in challenges, and discover the best street food hidden gems near you.
+                    </p>
+
+                    <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-slide-up" style={{ animationDelay: '0.2s' }}>
+                        <Button size="lg" className="h-14 px-8 rounded-full text-lg font-bold bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 shadow-lg hover:shadow-xl hover:scale-105 transition-all">
+                            <MessageSquare className="w-5 h-5 mr-2" />
+                            Join Discussion
+                        </Button>
+                        <Button size="lg" variant="outline" className="h-14 px-8 rounded-full text-lg font-bold border-2 hover:bg-gray-50">
+                            <Gamepad2 className="w-5 h-5 mr-2" />
+                            Play Games
+                        </Button>
+                    </div>
                 </div>
             </section>
 
             {/* Main Content */}
-            <div className="max-w-6xl mx-auto px-6 py-8">
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
 
-                    {/* Left Column - Main Content */}
-                    <div className="lg:col-span-2 space-y-6">
+                    {/* Left Column - Main Feed (8 cols) */}
+                    <div className="lg:col-span-8 space-y-8">
 
-                        {/* Challenges */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <VendorBattle />
-                            <StreakTracker />
+                        {/* Featured Challenges Grid */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div className="transform hover:-translate-y-1 transition-transform duration-300">
+                                <VendorBattle />
+                            </div>
+                            <div className="transform hover:-translate-y-1 transition-transform duration-300">
+                                <StreakTracker />
+                            </div>
                         </div>
+
+                        {/* Interactive Map */}
+                        <CommunityMap />
 
                         {/* Daily Activity */}
                         <ZodiacCard />
 
-                        {/* Hot Discussions with Search */}
-                        <Card>
-                            <CardHeader className="pb-3">
-                                <div className="flex items-center justify-between mb-3">
-                                    <CardTitle className="text-lg flex items-center gap-2">
-                                        <MessageSquare className="w-5 h-5 text-green-500" />
+                        {/* Hot Discussions */}
+                        <Card className="border-none shadow-soft bg-white/80 backdrop-blur-xl overflow-hidden">
+                            <CardHeader className="pb-4 border-b border-gray-100">
+                                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                                    <CardTitle className="text-xl flex items-center gap-2">
+                                        <div className="p-2 bg-green-100 rounded-lg">
+                                            <MessageSquare className="w-5 h-5 text-green-600" />
+                                        </div>
                                         Hot Topics
                                     </CardTitle>
-                                </div>
-                                <div className="relative">
-                                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                                    <Input
-                                        type="text"
-                                        placeholder="Search discussions..."
-                                        value={searchQuery}
-                                        onChange={(e) => setSearchQuery(e.target.value)}
-                                        className="pl-9 text-sm"
-                                    />
+                                    <div className="relative w-full sm:w-64">
+                                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                                        <Input
+                                            type="text"
+                                            placeholder="Search discussions..."
+                                            value={searchQuery}
+                                            onChange={(e) => setSearchQuery(e.target.value)}
+                                            className="pl-9 h-10 bg-gray-50 border-gray-200 focus:bg-white transition-colors rounded-xl"
+                                        />
+                                    </div>
                                 </div>
                             </CardHeader>
-                            <CardContent>
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <CardContent className="pt-6">
+                                <div className="grid grid-cols-1 gap-3">
                                     {discussions
                                         .filter(d => d.text.toLowerCase().includes(searchQuery.toLowerCase()))
-                                        .slice(0, 4)
                                         .map((discussion) => (
                                             <button
                                                 key={discussion.id}
                                                 onClick={() => handleDiscussionClick(discussion)}
-                                                className="p-3 bg-gray-50 hover:bg-gray-100 rounded-lg border border-gray-200 hover:border-green-300 transition-all text-left"
+                                                className="group p-4 bg-white hover:bg-orange-50/50 rounded-2xl border border-gray-100 hover:border-orange-200 transition-all text-left shadow-sm hover:shadow-md"
                                             >
-                                                <p className="font-semibold text-sm text-gray-900 line-clamp-2 mb-2">
+                                                <div className="flex justify-between items-start mb-2">
+                                                    <div className="flex gap-2">
+                                                        {discussion.tags?.map(tag => (
+                                                            <span key={tag} className="px-2 py-0.5 rounded-md bg-gray-100 text-gray-600 text-[10px] font-bold uppercase tracking-wider">
+                                                                {tag}
+                                                            </span>
+                                                        ))}
+                                                    </div>
+                                                    <span className="text-xs text-gray-400 font-medium">{discussion.time}</span>
+                                                </div>
+                                                <h3 className="font-bold text-base text-gray-900 mb-3 group-hover:text-orange-600 transition-colors line-clamp-1">
                                                     {discussion.text}
-                                                </p>
-                                                <div className="flex items-center gap-3 text-xs text-gray-500">
-                                                    <span>{discussion.replies} replies</span>
-                                                    <span>•</span>
-                                                    <span>{discussion.likes} likes</span>
+                                                </h3>
+                                                <div className="flex items-center gap-4 text-xs text-gray-500 font-medium">
+                                                    <span className="flex items-center gap-1.5">
+                                                        <MessageSquare className="w-3.5 h-3.5" />
+                                                        {discussion.replies} replies
+                                                    </span>
+                                                    <span className="flex items-center gap-1.5">
+                                                        <Heart className="w-3.5 h-3.5" />
+                                                        {discussion.likes} likes
+                                                    </span>
+                                                    <span className="flex items-center gap-1.5 ml-auto text-gray-400">
+                                                        by @{discussion.author}
+                                                    </span>
                                                 </div>
                                             </button>
                                         ))}
                                 </div>
                                 {searchQuery && discussions.filter(d => d.text.toLowerCase().includes(searchQuery.toLowerCase())).length === 0 && (
-                                    <div className="text-center py-8 text-gray-500">
-                                        <MessageSquare className="w-12 h-12 mx-auto mb-2 opacity-20" />
-                                        <p className="text-sm">No discussions found</p>
+                                    <div className="text-center py-12 text-gray-500">
+                                        <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                            <Search className="w-8 h-8 text-gray-400" />
+                                        </div>
+                                        <p className="font-medium">No discussions found</p>
+                                        <p className="text-sm mt-1">Try searching for something else</p>
                                     </div>
                                 )}
                             </CardContent>
                         </Card>
 
-                        {/* Tabs */}
-                        <Card>
-                            <div className="border-b">
-                                <div className="flex">
+                        {/* Content Tabs */}
+                        <Card className="border-none shadow-soft bg-white/80 backdrop-blur-xl overflow-hidden">
+                            <div className="border-b border-gray-100">
+                                <div className="flex p-2 gap-2 overflow-x-auto">
                                     {tabs.map(tab => {
                                         const Icon = tab.icon;
+                                        const isActive = activeTab === tab.id;
                                         return (
                                             <button
                                                 key={tab.id}
                                                 onClick={() => setActiveTab(tab.id)}
-                                                className={`flex items-center gap-2 px-4 py-3 font-medium text-sm border-b-2 transition-colors ${activeTab === tab.id
-                                                    ? 'border-orange-500 text-orange-600'
-                                                    : 'border-transparent text-gray-600 hover:text-gray-900'
+                                                className={`flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-sm transition-all whitespace-nowrap ${isActive
+                                                    ? 'bg-orange-500 text-white shadow-md'
+                                                    : 'bg-transparent text-gray-600 hover:bg-gray-50'
                                                     }`}
                                             >
                                                 <Icon className="w-4 h-4" />
@@ -199,7 +268,7 @@ export default function CommunityPage() {
                                     })}
                                 </div>
                             </div>
-                            <CardContent className="pt-6">
+                            <CardContent className="p-6 min-h-[400px]">
                                 {activeTab === 'games' && <FoodBingo />}
                                 {activeTab === 'photos' && <PhotoWall />}
                                 {activeTab === 'events' && <EventsCalendar />}
@@ -208,115 +277,135 @@ export default function CommunityPage() {
 
                     </div>
 
-                    {/* Right Sidebar */}
-                    <div className="space-y-4">
-                        <UserStats />
-                        <DailyPoll />
-                        <FoodPersonalityQuiz />
-                        <Leaderboard />
+                    {/* Right Sidebar - Sticky (4 cols) */}
+                    <div className="lg:col-span-4 space-y-6">
+                        <div className="sticky top-24 space-y-6">
+                            <UserStats />
 
-                        <Card>
-                            <CardHeader className="pb-3">
-                                <CardTitle className="text-base flex items-center gap-2">
-                                    <Award className="w-4 h-4 text-yellow-500" />
-                                    Vendor Spotlight
-                                </CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                <div className="space-y-3">
-                                    <div className="w-full h-24 bg-gradient-to-br from-orange-100 to-red-100 rounded-lg flex items-center justify-center">
-                                        <span className="text-5xl">🍛</span>
+                            <Leaderboard />
+
+                            <DailyPoll />
+
+                            <FoodPersonalityQuiz />
+
+                            <Card className="border-none shadow-soft bg-gradient-to-br from-orange-500 to-red-600 text-white overflow-hidden relative">
+                                <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-3xl -mr-16 -mt-16"></div>
+                                <div className="absolute bottom-0 left-0 w-24 h-24 bg-black/10 rounded-full blur-2xl -ml-12 -mb-12"></div>
+
+                                <CardHeader className="pb-2 relative z-10">
+                                    <CardTitle className="text-base flex items-center gap-2 text-white">
+                                        <Award className="w-5 h-5 text-yellow-300" />
+                                        Vendor Spotlight
+                                    </CardTitle>
+                                </CardHeader>
+                                <CardContent className="relative z-10">
+                                    <div className="space-y-4">
+                                        <div className="w-full aspect-video bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm border border-white/20">
+                                            <span className="text-6xl animate-bounce">🍛</span>
+                                        </div>
+                                        <div>
+                                            <h4 className="font-black text-lg">{vendor.name}</h4>
+                                            <div className="flex items-center gap-2 text-white/90 text-sm mt-1">
+                                                <MapPin className="w-3.5 h-3.5" />
+                                                {vendor.location}
+                                                <span className="w-1 h-1 bg-white/50 rounded-full"></span>
+                                                <span className="font-bold text-yellow-300">{vendor.rating}</span>
+                                            </div>
+                                        </div>
+                                        <Button
+                                            variant="secondary"
+                                            size="sm"
+                                            className="w-full font-bold bg-white text-orange-600 hover:bg-orange-50 border-none"
+                                            onClick={handleVendorClick}
+                                        >
+                                            View Profile
+                                        </Button>
                                     </div>
-                                    <div>
-                                        <h4 className="font-bold text-sm text-gray-900">{vendor.name}</h4>
-                                        <p className="text-xs text-gray-600">{vendor.location} · {vendor.rating}</p>
-                                    </div>
-                                    <Button
-                                        variant="outline"
-                                        size="sm"
-                                        className="w-full text-xs"
-                                        onClick={handleVendorClick}
-                                    >
-                                        View Vendor
-                                    </Button>
-                                </div>
-                            </CardContent>
-                        </Card>
+                                </CardContent>
+                            </Card>
+                        </div>
                     </div>
 
                 </div>
             </div>
 
             {/* Discussion Modal */}
-            {
-                selectedDiscussion && (
-                    <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4" onClick={() => setSelectedDiscussion(null)}>
-                        <div className="relative bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden" onClick={(e) => e.stopPropagation()}>
-                            <Button variant="ghost" size="icon" className="absolute top-3 right-3 z-10" onClick={() => setSelectedDiscussion(null)}>
-                                <X className="w-4 h-4" />
-                            </Button>
+            {selectedDiscussion && (
+                <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in duration-200" onClick={() => setSelectedDiscussion(null)}>
+                    <div className="relative bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-hidden shadow-2xl animate-in zoom-in-95 duration-200" onClick={(e) => e.stopPropagation()}>
+                        <Button variant="ghost" size="icon" className="absolute top-4 right-4 z-10 text-white hover:bg-white/20" onClick={() => setSelectedDiscussion(null)}>
+                            <X className="w-5 h-5" />
+                        </Button>
 
-                            <div className="bg-gradient-to-r from-green-500 to-emerald-500 text-white p-6">
-                                <div className="flex items-start gap-3 mb-4">
-                                    <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
-                                        <MessageSquare className="w-5 h-5" />
-                                    </div>
-                                    <div className="flex-1">
-                                        <div className="flex items-center gap-2 mb-1 text-sm">
-                                            <span className="font-bold">@{selectedDiscussion.author}</span>
-                                            <span className="text-white/70">• {selectedDiscussion.time}</span>
-                                        </div>
-                                        <h3 className="text-lg font-bold">{selectedDiscussion.text}</h3>
-                                    </div>
+                        <div className="bg-gradient-to-r from-orange-500 to-red-600 text-white p-8 relative overflow-hidden">
+                            <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -mr-20 -mt-20"></div>
+
+                            <div className="relative z-10 flex items-start gap-4 mb-6">
+                                <div className="w-12 h-12 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center border border-white/20 shadow-lg">
+                                    <MessageSquare className="w-6 h-6" />
                                 </div>
-
-                                <div className="flex gap-3">
-                                    <button onClick={handleLikeDiscussion} className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-sm transition-all ${hasLiked ? 'bg-red-500 text-white' : 'bg-white/20 hover:bg-white/30'}`}>
-                                        <Heart className={`w-4 h-4 ${hasLiked ? 'fill-current' : ''}`} />
-                                        <span className="font-bold">{selectedDiscussion.likes + (hasLiked ? 1 : 0)}</span>
-                                    </button>
-                                    <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/20 text-sm">
-                                        <MessageSquare className="w-4 h-4" />
-                                        <span className="font-bold">{comments.length}</span>
+                                <div className="flex-1">
+                                    <div className="flex items-center gap-2 mb-2 text-sm font-medium text-white/90">
+                                        <span className="bg-white/20 px-2 py-0.5 rounded-md">@{selectedDiscussion.author}</span>
+                                        <span>• {selectedDiscussion.time}</span>
                                     </div>
+                                    <h3 className="text-2xl font-black leading-tight">{selectedDiscussion.text}</h3>
                                 </div>
                             </div>
 
-                            <div className="p-6 max-h-96 overflow-y-auto space-y-3">
-                                {comments.map((comment) => (
-                                    <div key={comment.id} className="p-3 bg-gray-50 rounded-lg">
-                                        <div className="flex items-start justify-between mb-2">
-                                            <div className="flex items-center gap-2">
-                                                <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold ${comment.author === 'you' ? 'bg-orange-500 text-white' : 'bg-green-500 text-white'}`}>
-                                                    {comment.author.charAt(0).toUpperCase()}
-                                                </div>
-                                                <div>
-                                                    <div className="font-bold text-xs">@{comment.author}</div>
-                                                    <div className="text-xs text-gray-500">{comment.time}</div>
-                                                </div>
-                                            </div>
-                                            <button className="flex items-center gap-1 text-gray-400 hover:text-red-500">
-                                                <ThumbsUp className="w-3 h-3" />
-                                                <span className="text-xs">{comment.likes}</span>
-                                            </button>
-                                        </div>
-                                        <p className="text-sm text-gray-700">{comment.text}</p>
-                                    </div>
-                                ))}
-                            </div>
-
-                            <div className="border-t p-4 bg-gray-50">
-                                <div className="flex gap-2">
-                                    <input type="text" value={newComment} onChange={(e) => setNewComment(e.target.value)} onKeyPress={(e) => e.key === 'Enter' && handlePostComment()} placeholder="Add a comment..." className="flex-1 px-4 py-2 rounded-lg border border-gray-200 focus:border-green-500 focus:outline-none text-sm" />
-                                    <Button onClick={handlePostComment} disabled={!newComment.trim()} className="bg-green-500 hover:bg-green-600">
-                                        <Send className="w-4 h-4" />
-                                    </Button>
+                            <div className="relative z-10 flex gap-3">
+                                <button onClick={handleLikeDiscussion} className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-all ${hasLiked ? 'bg-white text-red-500 shadow-lg scale-105' : 'bg-white/20 hover:bg-white/30 text-white'}`}>
+                                    <Heart className={`w-4 h-4 ${hasLiked ? 'fill-current' : ''}`} />
+                                    <span>{selectedDiscussion.likes + (hasLiked ? 1 : 0)}</span>
+                                </button>
+                                <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/20 text-sm font-bold text-white">
+                                    <MessageSquare className="w-4 h-4" />
+                                    <span>{comments.length} replies</span>
                                 </div>
                             </div>
                         </div>
+
+                        <div className="p-6 max-h-[400px] overflow-y-auto space-y-4 bg-gray-50/50">
+                            {comments.map((comment) => (
+                                <div key={comment.id} className="p-4 bg-white rounded-2xl border border-gray-100 shadow-sm">
+                                    <div className="flex items-start justify-between mb-2">
+                                        <div className="flex items-center gap-3">
+                                            <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shadow-sm ${comment.author === 'you' ? 'bg-orange-100 text-orange-600' : 'bg-gray-100 text-gray-600'}`}>
+                                                {comment.author.charAt(0).toUpperCase()}
+                                            </div>
+                                            <div>
+                                                <div className="font-bold text-sm text-gray-900">@{comment.author}</div>
+                                                <div className="text-[10px] text-gray-400 font-medium">{comment.time}</div>
+                                            </div>
+                                        </div>
+                                        <button className="flex items-center gap-1.5 text-gray-400 hover:text-orange-500 transition-colors">
+                                            <ThumbsUp className="w-3.5 h-3.5" />
+                                            <span className="text-xs font-bold">{comment.likes}</span>
+                                        </button>
+                                    </div>
+                                    <p className="text-sm text-gray-600 pl-11 leading-relaxed">{comment.text}</p>
+                                </div>
+                            ))}
+                        </div>
+
+                        <div className="p-4 bg-white border-t border-gray-100">
+                            <div className="flex gap-3">
+                                <input
+                                    type="text"
+                                    value={newComment}
+                                    onChange={(e) => setNewComment(e.target.value)}
+                                    onKeyPress={(e) => e.key === 'Enter' && handlePostComment()}
+                                    placeholder="Add a comment..."
+                                    className="flex-1 px-4 py-3 rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-100 focus:outline-none text-sm bg-gray-50 focus:bg-white transition-all"
+                                />
+                                <Button onClick={handlePostComment} disabled={!newComment.trim()} className="h-auto px-5 rounded-xl bg-orange-500 hover:bg-orange-600 text-white shadow-md">
+                                    <Send className="w-4 h-4" />
+                                </Button>
+                            </div>
+                        </div>
                     </div>
-                )
-            }
+                </div>
+            )}
 
             <Footer />
         </div >
