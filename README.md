@@ -262,7 +262,7 @@ Built with modern web technologies and best practices for street food discovery.
 ---
 
 **Made with ❤️ for street food lovers** 🍽️
-
+<!-- Made some changes -->
 Last Updated: 2025
 Version: 1.0.0
 
