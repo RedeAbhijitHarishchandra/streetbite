@@ -30,4 +30,8 @@ public class UserService {
     public java.util.List<User> getAllUsers() {
         return userRepository.findAll();
     }
+
+    public Optional<User> getUserByResetPasswordToken(String token) {
+        return userRepository.findByResetPasswordToken(token);
+    }
 }

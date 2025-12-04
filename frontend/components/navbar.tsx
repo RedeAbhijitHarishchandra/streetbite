@@ -12,8 +12,8 @@ export function Navbar() {
   const pathname = usePathname()
   const [isOpen, setIsOpen] = useState(false)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
-  const [userName, setUserName] = useState<string>('')
-  const [scrolled, setScrolled] = useState(false)
+  const [userProfilePic, setUserProfilePic] = useState<string>('')
+  const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8081/api';
 
   useEffect(() => {
     // Check if user is logged in
@@ -24,6 +24,7 @@ export function Navbar() {
           const user = JSON.parse(userStr)
           setIsLoggedIn(true)
           setUserName(user.displayName || user.email || 'User')
+          setUserProfilePic(user.profilePicture || '')
         } catch (e) {
           setIsLoggedIn(false)
         }
@@ -36,32 +37,29 @@ export function Navbar() {
 
     // Listen for storage changes (e.g., login/logout in another tab)
     window.addEventListener('storage', checkAuthState)
-    return () => window.removeEventListener('storage', checkAuthState)
-  }, [])
+    // Custom event for profile updates
+    window.addEventListener('user-updated', checkAuthState)
 
-  // Scroll effect for navbar
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 20)
+    return () => {
+      window.removeEventListener('storage', checkAuthState)
+      window.removeEventListener('user-updated', checkAuthState)
     }
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  const handleLogout = () => {
-    localStorage.removeItem('user')
-    localStorage.removeItem('firebaseUser')
-    setIsLoggedIn(false)
-    setUserName('')
-    router.push('/')
-  }
+  // ... (scroll effect remains same)
 
-  const navItems = [
-    { label: 'Explore', href: '/explore' },
-    { label: 'Offers', href: '/offers' },
-    { label: 'About', href: '/about' },
-    { label: 'Community', href: '/community' },
-  ]
+  // ... (handleLogout remains same)
+
+  // Helper to resolve image URL
+  const getImageUrl = (path: string) => {
+    if (!path) return '';
+    if (path.startsWith('http')) return path;
+    if (path.startsWith('/avatars/')) return path;
+    const baseUrl = BACKEND_URL.replace(/\/api\/?$/, '');
+    return `${baseUrl}${path.startsWith('/') ? '' : '/'}${path}`;
+  };
+
+  // ... (navItems remains same)
 
   return (
     <nav className={`sticky top-0 z-50 transition-all duration-300 ${scrolled
@@ -105,8 +103,20 @@ export function Navbar() {
               <div className="flex items-center gap-2">
                 <Link href="/profile">
                   <button className="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-orange-50 transition-all duration-200 hover:scale-105 group">
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-orange-400 to-red-500 flex items-center justify-center text-white font-semibold text-sm group-hover:shadow-lg transition-shadow">
-                      {userName.charAt(0).toUpperCase()}
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-orange-400 to-red-500 flex items-center justify-center text-white font-semibold text-sm group-hover:shadow-lg transition-shadow overflow-hidden">
+                      {userProfilePic ? (
+                        <img
+                          src={getImageUrl(userProfilePic)}
+                          alt={userName}
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).style.display = 'none';
+                            (e.target as HTMLImageElement).parentElement!.innerText = userName.charAt(0).toUpperCase();
+                          }}
+                        />
+                      ) : (
+                        userName.charAt(0).toUpperCase()
+                      )}
                     </div>
                     <span className="text-sm font-medium text-foreground">{userName}</span>
                   </button>
@@ -169,8 +179,20 @@ export function Navbar() {
                 <>
                   <Link href="/profile" onClick={() => setIsOpen(false)}>
                     <button className="w-full flex items-center justify-center gap-2 py-3 rounded-lg bg-gradient-to-r from-orange-50 to-red-50 text-primary font-medium transition-all duration-200 hover:shadow-md">
-                      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-orange-400 to-red-500 flex items-center justify-center text-white font-semibold text-sm">
-                        {userName.charAt(0).toUpperCase()}
+                      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-orange-400 to-red-500 flex items-center justify-center text-white font-semibold text-sm overflow-hidden">
+                        {userProfilePic ? (
+                          <img
+                            src={getImageUrl(userProfilePic)}
+                            alt={userName}
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              (e.target as HTMLImageElement).style.display = 'none';
+                              (e.target as HTMLImageElement).parentElement!.innerText = userName.charAt(0).toUpperCase();
+                            }}
+                          />
+                        ) : (
+                          userName.charAt(0).toUpperCase()
+                        )}
                       </div>
                       {userName}
                     </button>

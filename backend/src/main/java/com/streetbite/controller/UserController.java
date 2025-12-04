@@ -28,6 +28,8 @@ public class UserController {
                         existingUser.setDisplayName(userUpdates.getDisplayName());
                     if (userUpdates.getPhoneNumber() != null)
                         existingUser.setPhoneNumber(userUpdates.getPhoneNumber());
+                    if (userUpdates.getProfilePicture() != null)
+                        existingUser.setProfilePicture(userUpdates.getProfilePicture());
 
                     User saved = userService.saveUser(existingUser);
                     return ResponseEntity.ok(saved);
