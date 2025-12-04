@@ -72,7 +72,20 @@ export default function Promotions() {
         }
 
         const user = JSON.parse(userStr)
-        const vid = user.vendorId || user.id
+
+        // Check if user has vendorId - required for vendors
+        if (!user.vendorId && user.role === 'VENDOR') {
+          setError('Vendor ID not found. Please sign out and sign in again.')
+          setLoading(false)
+          return
+        }
+
+        const vid = user.vendorId
+        if (!vid) {
+          setError('You need to be a vendor to view promotions')
+          setLoading(false)
+          return
+        }
         setVendorId(vid)
 
         const apiPromotions = await promotionApi.getByVendor(vid)

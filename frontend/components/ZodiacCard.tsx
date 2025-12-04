@@ -40,7 +40,7 @@ export function ZodiacCard() {
     const fetchHoroscopeBySign = async (sign: string) => {
         setLoading(true);
         try {
-            const response = await axios.get(`http://localhost:8080/api/zodiac/sign/${sign}`);
+            const response = await axios.get(`http://localhost:8081/api/zodiac/sign/${sign}`);
             setData(response.data);
             setSelectedSign(sign);
             setXpClaimed(false);

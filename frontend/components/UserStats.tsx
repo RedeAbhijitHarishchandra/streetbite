@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Trophy, Flame, Star, TrendingUp, UtensilsCrossed } from "lucide-react";
 import { RESULTS } from "./FoodPersonalityQuiz";
-import { useGamification } from "@/context/GamificationContext";
+import { useGamification, getXPForLevel, getXPForNextLevel, getXPProgressInCurrentLevel } from "@/context/GamificationContext";
 
 interface UserStats {
     xp: number;
@@ -16,6 +16,7 @@ interface UserStats {
 export function UserStats() {
     const { xp, level, rank, displayName, streak } = useGamification();
     const [archetype, setArchetype] = useState<keyof typeof RESULTS | null>(null);
+    const [profilePicture, setProfilePicture] = useState<string>('');
 
     useEffect(() => {
         const loadArchetype = () => {
@@ -29,10 +30,33 @@ export function UserStats() {
             }
         };
 
+        const loadProfilePicture = () => {
+            if (typeof window !== 'undefined') {
+                const userStr = localStorage.getItem('user');
+                if (userStr) {
+                    try {
+                        const user = JSON.parse(userStr);
+                        setProfilePicture(user.profilePicture || '');
+                    } catch (e) {
+                        console.error('Error parsing user data:', e);
+                    }
+                }
+            }
+        };
+
         loadArchetype();
+        loadProfilePicture();
         window.addEventListener("storage", loadArchetype);
-        return () => window.removeEventListener("storage", loadArchetype);
+        window.addEventListener("user-updated", loadProfilePicture);
+        return () => {
+            window.removeEventListener("storage", loadArchetype);
+            window.removeEventListener("user-updated", loadProfilePicture);
+        };
     }, []);
+
+    // Calculate XP progress with scaled leveling
+    const xpProgress = getXPProgressInCurrentLevel(xp, level);
+    const xpNeeded = getXPForNextLevel(level) - xp;
 
     const statItems = [
         { label: "Total XP", value: xp.toLocaleString(), icon: Trophy, color: "text-yellow-500" },
@@ -49,8 +73,21 @@ export function UserStats() {
 
             <CardContent className="pt-6 pb-4 relative z-10">
                 <div className="text-center mb-6">
-                    <div className="w-20 h-20 mx-auto rounded-full bg-gradient-to-br from-orange-400 to-pink-600 flex items-center justify-center text-4xl mb-3 shadow-[0_0_20px_rgba(249,115,22,0.3)] relative border-2 border-white/10">
-                        👤
+                    <div className="w-20 h-20 mx-auto rounded-full bg-gradient-to-br from-orange-400 to-pink-600 flex items-center justify-center text-4xl mb-3 shadow-[0_0_20px_rgba(249,115,22,0.3)] relative border-2 border-white/10 overflow-hidden">
+                        {profilePicture ? (
+                            <img
+                                src={profilePicture.startsWith('http') || profilePicture.startsWith('/') ? profilePicture : `/avatars/${profilePicture}`}
+                                alt="Profile"
+                                className="w-full h-full object-cover"
+                                onError={(e) => {
+                                    (e.target as HTMLImageElement).src = '';
+                                    (e.target as HTMLImageElement).style.display = 'none';
+                                    (e.target as HTMLImageElement).nextElementSibling?.remove();
+                                }}
+                            />
+                        ) : (
+                            <span>👤</span>
+                        )}
                         {archetype && (
                             <div className="absolute -bottom-2 -right-2 bg-[#1a103c] text-white text-sm p-1.5 rounded-full border border-white/20 shadow-lg" title={RESULTS[archetype].title}>
                                 {RESULTS[archetype].icon}
@@ -68,11 +105,11 @@ export function UserStats() {
                     <div className="w-32 mx-auto mt-2 h-1.5 bg-white/10 rounded-full overflow-hidden">
                         <div
                             className="h-full bg-gradient-to-r from-orange-400 to-pink-500 rounded-full transition-all duration-1000"
-                            style={{ width: `${xp % 100}%` }}
+                            style={{ width: `${Math.min(xpProgress, 100)}%` }}
                         />
                     </div>
                     <p className="text-[10px] text-indigo-300 mt-1">
-                        {`${100 - (xp % 100)} XP to next level`}
+                        {`${xpNeeded} XP to next level`}
                     </p>
 
                     {archetype && (

@@ -26,7 +26,20 @@ export default function Analytics() {
         }
 
         const user = JSON.parse(userStr)
-        const vendorId = user.vendorId || user.id
+
+        // Check if user has vendorId - required for vendors
+        if (!user.vendorId && user.role === 'VENDOR') {
+          setError('Vendor ID not found. Please sign out and sign in again.')
+          setLoading(false)
+          return
+        }
+
+        const vendorId = user.vendorId
+        if (!vendorId) {
+          setError('You need to be a vendor to view analytics')
+          setLoading(false)
+          return
+        }
 
         // Fetch analytics and menu items
         const [analyticsData, menuData] = await Promise.all([
@@ -113,10 +126,10 @@ export default function Analytics() {
   }))
 
   const customerMetrics = [
-    { metric: 'Total Revenue', value: `₹${analytics.totalRevenue.toFixed(0)}`, change: 'All time' },
-    { metric: 'Total Orders', value: analytics.totalOrders, change: 'All time' },
-    { metric: 'Average Rating', value: `${analytics.averageRating.toFixed(1)}/5`, change: 'Menu items' },
-    { metric: 'Active Customers', value: analytics.activeCustomers, change: 'Estimated' },
+    { metric: 'Total Revenue', value: `₹${(analytics?.totalRevenue ?? 0).toFixed(0)}`, change: 'All time' },
+    { metric: 'Total Orders', value: analytics?.totalOrders ?? 0, change: 'All time' },
+    { metric: 'Average Rating', value: `${(analytics?.averageRating ?? 0).toFixed(1)}/5`, change: 'Menu items' },
+    { metric: 'Active Customers', value: analytics?.activeCustomers ?? 0, change: 'Estimated' },
   ]
 
   return (

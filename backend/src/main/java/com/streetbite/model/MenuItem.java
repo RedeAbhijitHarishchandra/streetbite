@@ -29,7 +29,7 @@ public class MenuItem {
     private String imageUrl;
 
     @Column(name = "is_available")
-    private boolean isAvailable = true;
+    private boolean available = true;
 
     @Column(name = "preparation_time")
     private Integer preparationTime;
@@ -108,12 +108,13 @@ public class MenuItem {
         this.imageUrl = imageUrl;
     }
 
+    @com.fasterxml.jackson.annotation.JsonProperty("isAvailable")
     public boolean isAvailable() {
-        return isAvailable;
+        return available;
     }
 
     public void setAvailable(boolean available) {
-        isAvailable = available;
+        this.available = available;
     }
 
     public Integer getPreparationTime() {

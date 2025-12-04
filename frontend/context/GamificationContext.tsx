@@ -19,6 +19,35 @@ interface GamificationContextType {
 
 const GamificationContext = createContext<GamificationContextType | undefined>(undefined)
 
+
+// Level scaling functions - exported for use in components
+export const getXPForLevel = (level: number): number => {
+    // Formula: Total XP needed = level * (level - 1) * 50
+    // Level 1: 0 XP, Level 2: 100 XP, Level 3: 300 XP, Level 4: 600 XP, etc.
+    return level * (level - 1) * 50
+}
+
+export const getLevelFromXP = (xp: number): number => {
+    // Find the highest level where required XP <= current XP
+    let level = 1
+    while (getXPForLevel(level + 1) <= xp) {
+        level++
+    }
+    return level
+}
+
+export const getXPForNextLevel = (currentLevel: number): number => {
+    return getXPForLevel(currentLevel + 1)
+}
+
+export const getXPProgressInCurrentLevel = (xp: number, level: number): number => {
+    const xpForCurrentLevel = getXPForLevel(level)
+    const xpForNextLevel = getXPForLevel(level + 1)
+    const xpIntoLevel = xp - xpForCurrentLevel
+    const xpNeededForLevel = xpForNextLevel - xpForCurrentLevel
+    return (xpIntoLevel / xpNeededForLevel) * 100
+}
+
 export function GamificationProvider({ children }: { children: React.ReactNode }) {
     const [xp, setXp] = useState(0)
     const [level, setLevel] = useState(1)
@@ -36,9 +65,35 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
         }
     }, [])
 
+    // Recalculate level whenever XP changes
+    useEffect(() => {
+        const calculatedLevel = getLevelFromXP(xp)
+        if (calculatedLevel !== level) {
+            // Only show notification if user is logged in and level actually increased
+            const previousLevel = parseInt(localStorage.getItem('userLevel') || '0', 10)
+
+            setLevel(calculatedLevel)
+
+            // Only show level-up toast if this is a genuine increase (not initial load)
+            if (calculatedLevel > previousLevel && previousLevel > 0) {
+                toast.success(`Level Up! 🎉`, {
+                    description: `You reached Level ${calculatedLevel}!`,
+                    style: { background: '#8B5CF6', color: 'white', border: 'none' }
+                })
+            }
+
+            // Store the new level
+            localStorage.setItem('userLevel', calculatedLevel.toString())
+        }
+    }, [xp])
+
     const fetchStats = async () => {
         try {
             const stats = await gamificationApi.getUserStats()
+
+            // Store current level BEFORE updating state to prevent false notifications
+            localStorage.setItem('userLevel', stats.level.toString())
+
             setXp(stats.xp)
             setLevel(stats.level)
             setStreak(stats.streak)
@@ -64,9 +119,8 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
         const newXP = xp + amount
         setXp(newXP)
 
-        // We don't manually calculate level here anymore, backend does it
-        // But for UI responsiveness we can estimate
-        const estimatedLevel = Math.floor(newXP / 1000) + 1
+        // Calculate new level with scaling
+        const estimatedLevel = getLevelFromXP(newXP)
         if (estimatedLevel > level) {
             toast.success(`Level Up! 🎉`, {
                 description: `You reached Level ${estimatedLevel}!`,

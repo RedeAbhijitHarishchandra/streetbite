@@ -2,9 +2,73 @@
 
 import Link from 'next/link'
 import { Instagram, Twitter, Linkedin, Mail, Phone, MapPin, Heart, ArrowRight, Sparkles } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import axios from 'axios'
+import { toast } from 'sonner'
 
 export function Footer() {
-    const currentYear = new Date().getFullYear()
+    const [currentYear, setCurrentYear] = useState(2025)
+    const [email, setEmail] = useState('')
+    const [subscribing, setSubscribing] = useState(false)
+
+    useEffect(() => {
+        setCurrentYear(new Date().getFullYear())
+    }, [])
+
+    const validateEmail = (email: string): boolean => {
+        const emailRegex = /^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/
+        return emailRegex.test(email)
+    }
+
+    const handleSubscribe = async () => {
+        const trimmedEmail = email.trim()
+
+        // Validation
+        if (!trimmedEmail) {
+            toast.error('Please enter your email address')
+            return
+        }
+
+        if (!validateEmail(trimmedEmail)) {
+            toast.error('Please enter a valid email address')
+            return
+        }
+
+        setSubscribing(true)
+
+        try {
+            const response = await axios.post('http://localhost:8081/api/newsletter/subscribe', {
+                email: trimmedEmail.toLowerCase()
+            })
+
+            if (response.data.success) {
+                toast.success(response.data.message || 'Successfully subscribed!', {
+                    description: 'Get ready for amazing food deals and updates!',
+                    duration: 5000,
+                })
+                setEmail('') // Clear input
+            } else {
+                toast.info(response.data.message || 'Subscription status updated')
+            }
+
+        } catch (error: any) {
+            console.error('Newsletter subscription error:', error)
+
+            if (error.response?.data?.message) {
+                toast.error(error.response.data.message)
+            } else {
+                toast.error('Failed to subscribe. Please try again later.')
+            }
+        } finally {
+            setSubscribing(false)
+        }
+    }
+
+    const handleKeyPress = (e: React.KeyboardEvent) => {
+        if (e.key === 'Enter' && !subscribing) {
+            handleSubscribe()
+        }
+    }
 
     return (
         <footer className="relative bg-gradient-to-b from-amber-50/30 via-orange-50/50 to-white border-t border-orange-100 overflow-hidden">
@@ -33,12 +97,20 @@ export function Footer() {
                         <div className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
                             <input
                                 type="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                onKeyPress={handleKeyPress}
                                 placeholder="Enter your email"
-                                className="flex-1 px-6 py-4 rounded-full border-2 border-orange-200 bg-white focus:border-primary focus:outline-none focus:ring-4 focus:ring-primary/10 transition-all text-foreground placeholder:text-muted-foreground shadow-sm"
+                                disabled={subscribing}
+                                className="flex-1 px-6 py-4 rounded-full border-2 border-orange-200 bg-white focus:border-primary focus:outline-none focus:ring-4 focus:ring-primary/10 transition-all text-foreground placeholder:text-muted-foreground shadow-sm disabled:opacity-60 disabled:cursor-not-allowed"
                             />
-                            <button className="px-8 py-4 rounded-full bg-gradient-to-r from-primary to-orange-600 hover:from-primary/90 hover:to-orange-600/90 text-white font-bold shadow-lg shadow-primary/30 hover:shadow-xl hover:shadow-primary/40 transition-all hover-lift group flex items-center justify-center gap-2">
-                                Subscribe
-                                <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                            <button
+                                onClick={handleSubscribe}
+                                disabled={subscribing}
+                                className="px-8 py-4 rounded-full bg-gradient-to-r from-primary to-orange-600 hover:from-primary/90 hover:to-orange-600/90 text-white font-bold shadow-lg shadow-primary/30 hover:shadow-xl hover:shadow-primary/40 transition-all hover-lift group flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:shadow-lg"
+                            >
+                                {subscribing ? 'Subscribing...' : 'Subscribe'}
+                                <ArrowRight className={`h-5 w-5 transition-transform ${subscribing ? 'animate-pulse' : 'group-hover:translate-x-1'}`} />
                             </button>
                         </div>
                     </div>

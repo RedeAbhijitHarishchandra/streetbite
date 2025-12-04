@@ -22,7 +22,10 @@ public class MenuService {
 
     @Transactional
     public MenuItem saveMenuItem(MenuItem menuItem) {
-        return menuItemRepository.save(menuItem);
+        System.out.println("Saving menu item: " + menuItem.getName() + ", isAvailable: " + menuItem.isAvailable());
+        MenuItem saved = menuItemRepository.saveAndFlush(menuItem);
+        System.out.println("After save, isAvailable: " + saved.isAvailable());
+        return saved;
     }
 
     @Transactional
@@ -43,7 +46,7 @@ public class MenuService {
     }
 
     public List<MenuItem> getAvailableMenuByVendor(Long vendorId) {
-        return menuItemRepository.findByVendorIdAndIsAvailableTrue(vendorId);
+        return menuItemRepository.findByVendorIdAndAvailableTrue(vendorId);
     }
 
     public Optional<MenuItem> getMenuItemById(Long id) {

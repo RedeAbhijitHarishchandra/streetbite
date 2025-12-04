@@ -12,6 +12,7 @@ export function Navbar() {
   const pathname = usePathname()
   const [isOpen, setIsOpen] = useState(false)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [userName, setUserName] = useState<string>('')
   const [userProfilePic, setUserProfilePic] = useState<string>('')
   const [scrolled, setScrolled] = useState(false)
   const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8081/api';
@@ -24,6 +25,8 @@ export function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
+  const [userRole, setUserRole] = useState<string>('')
+
   useEffect(() => {
     // Check if user is logged in
     const checkAuthState = () => {
@@ -34,11 +37,14 @@ export function Navbar() {
           setIsLoggedIn(true)
           setUserName(user.displayName || user.email || 'User')
           setUserProfilePic(user.profilePicture || '')
+          setUserRole(user.role || 'USER')
         } catch (e) {
           setIsLoggedIn(false)
+          setUserRole('')
         }
       } else {
         setIsLoggedIn(false)
+        setUserRole('')
       }
     }
 
@@ -62,15 +68,25 @@ export function Navbar() {
     localStorage.removeItem('firebaseUser')
     setIsLoggedIn(false)
     setUserName('')
+    setUserRole('')
     router.push('/')
   }
 
-  const navItems = [
+  const customerNavItems = [
     { label: 'Explore', href: '/explore' },
     { label: 'Offers', href: '/offers' },
     { label: 'About', href: '/about' },
     { label: 'Community', href: '/community' },
   ]
+
+  const vendorNavItems = [
+    { label: 'Dashboard', href: '/vendor' },
+    { label: 'Menu', href: '/vendor/menu' },
+    { label: 'Analytics', href: '/vendor/analytics' },
+    { label: 'Promotions', href: '/vendor/promotions' },
+  ]
+
+  const navItems = userRole === 'VENDOR' ? vendorNavItems : customerNavItems
 
   // Helper to resolve image URL
   const getImageUrl = (path: string) => {
@@ -80,6 +96,8 @@ export function Navbar() {
     const baseUrl = BACKEND_URL.replace(/\/api\/?$/, '');
     return `${baseUrl}${path.startsWith('/') ? '' : '/'}${path}`;
   };
+
+
 
   return (
     <nav className={`sticky top-0 z-50 transition-all duration-300 ${scrolled

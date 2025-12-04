@@ -343,11 +343,22 @@ export default function ProfilePage() {
                 <Input
                   id="phoneNumber"
                   type="tel"
-                  placeholder="+91 1234567890"
+                  placeholder="1234567890"
                   value={userData.phoneNumber}
-                  onChange={(e) => setUserData({ ...userData, phoneNumber: e.target.value })}
+                  onChange={(e) => {
+                    // Only allow digits and limit to 10 characters
+                    const value = e.target.value.replace(/\D/g, '').slice(0, 10)
+                    setUserData({ ...userData, phoneNumber: value })
+                  }}
+                  maxLength={10}
                   className="mt-2 border-gray-200 focus:border-primary focus:ring-1 focus:ring-primary transition-all"
                 />
+                {userData.phoneNumber && userData.phoneNumber.length < 10 && (
+                  <p className="text-xs text-amber-600 mt-1">Phone number must be exactly 10 digits</p>
+                )}
+                {userData.phoneNumber && userData.phoneNumber.length === 10 && (
+                  <p className="text-xs text-green-600 mt-1">✓ Valid phone number</p>
+                )}
               </div>
 
               {/* Role (Read-only) */}

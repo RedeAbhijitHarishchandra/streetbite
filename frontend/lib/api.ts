@@ -109,6 +109,8 @@ export const promotionApi = {
 
 export const analyticsApi = {
   getVendorAnalytics: (vendorId: string) => api.get(`/analytics/vendor/${vendorId}`) as Promise<any>,
+  logEvent: (vendorId: string | number, eventType: string, additionalData: any = {}) =>
+    api.post('/analytics/event', { vendorId, eventType, ...additionalData }) as Promise<any>,
 };
 
 export const favoriteApi = {

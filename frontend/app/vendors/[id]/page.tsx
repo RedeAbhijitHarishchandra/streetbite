@@ -8,10 +8,11 @@ import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { DirectionsMap } from '@/components/directions-map'
-import { vendorApi, menuApi, reviewApi, promotionApi, favoriteApi } from '@/lib/api'
+import { vendorApi, menuApi, reviewApi, promotionApi, favoriteApi, analyticsApi } from '@/lib/api'
 import { Footer } from '@/components/footer'
 import { Textarea } from '@/components/ui/textarea'
 import { useLiveVendorStatus } from '@/hooks/use-live-vendor-status'
+import { useLiveMenuAvailability } from '@/hooks/use-live-menu-availability'
 import { useToast } from '@/hooks/use-toast'
 
 interface Vendor {
@@ -75,6 +76,9 @@ export default function VendorDetailsPage() {
     // Real-time vendor status from Firebase
     const { status: liveStatus } = useLiveVendorStatus(vendorId)
 
+    // Real-time menu availability from Firebase
+    const { getAvailability } = useLiveMenuAvailability(menuItems)
+
     // Review form state
     const [showReviewForm, setShowReviewForm] = useState(false)
     const [reviewRating, setReviewRating] = useState(5)
@@ -102,12 +106,16 @@ export default function VendorDetailsPage() {
                     return
                 }
 
+                // Log Profile View
+                analyticsApi.logEvent(vendorId, 'VIEW_PROFILE').catch(console.error)
+
                 // Fetch vendor details
                 const vendorData = await vendorApi.getById(vendorId)
                 setVendor(vendorData)
 
                 // Fetch menu items
                 const menuData = await menuApi.getByVendor(vendorId)
+                setMenuItems(menuData || [])
 
                 // Fetch active promotions
                 try {
@@ -141,6 +149,9 @@ export default function VendorDetailsPage() {
 
     const handleGetDirections = () => {
         if (!displayVendor) return
+
+        // Log Direction Click
+        analyticsApi.logEvent(vendorId, 'CLICK_DIRECTION').catch(console.error)
 
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
@@ -479,8 +490,8 @@ export default function VendorDetailsPage() {
                                         {category}
                                     </h2>
                                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                        {items.map((item) => (
-                                            <div key={item.itemId} className="group bg-white border-2 border-gray-100 rounded-2xl overflow-hidden hover:border-primary/40 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                                        {items.map((item: any) => (
+                                            <div key={item.id || item.itemId} className="group bg-white border-2 border-gray-100 rounded-2xl overflow-hidden hover:border-primary/40 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
                                                 <div className="relative h-48 bg-gray-100 overflow-hidden">
                                                     <img
                                                         src={item.imageUrl || "/placeholder-food.jpg"}
@@ -491,13 +502,30 @@ export default function VendorDetailsPage() {
                                                         }}
                                                     />
                                                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                                                    {!item.isAvailable && (
-                                                        <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
-                                                            <span className="bg-red-500 text-white px-4 py-2 rounded-full font-bold text-sm">
-                                                                Unavailable
-                                                            </span>
-                                                        </div>
-                                                    )}
+                                                    {/* Availability Badge - uses real-time data */}
+                                                    {(() => {
+                                                        const itemId = item.id || item.itemId
+                                                        const isAvailable = getAvailability(itemId)
+                                                        return (
+                                                            <>
+                                                                <div className="absolute bottom-3 left-3">
+                                                                    <span className={`px-3 py-1.5 rounded-full text-xs font-bold backdrop-blur-sm shadow-sm ${isAvailable
+                                                                        ? 'bg-green-500/90 text-white'
+                                                                        : 'bg-red-500/90 text-white'
+                                                                        }`}>
+                                                                        {isAvailable ? '✓ In Stock' : '✕ Sold Out'}
+                                                                    </span>
+                                                                </div>
+                                                                {!isAvailable && (
+                                                                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                                                                        <span className="bg-gray-900/80 text-white px-4 py-2 rounded-full font-bold text-sm">
+                                                                            Currently Unavailable
+                                                                        </span>
+                                                                    </div>
+                                                                )}
+                                                            </>
+                                                        )
+                                                    })()}
                                                 </div>
                                                 <div className="p-5">
                                                     <div className="flex justify-between items-start mb-2">
@@ -511,8 +539,8 @@ export default function VendorDetailsPage() {
                                                         </span>
                                                         <Button
                                                             size="sm"
-                                                            disabled={!item.isAvailable}
-                                                            className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-semibold hover:scale-105 transition-all"
+                                                            disabled={!getAvailability(item.id || item.itemId)}
+                                                            className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-semibold hover:scale-105 transition-all disabled:opacity-50"
                                                         >
                                                             Add +
                                                         </Button>

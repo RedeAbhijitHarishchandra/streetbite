@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Home, Menu, BarChart3, Tag, Settings, LogOut, Store } from 'lucide-react'
+import { Home, Menu, BarChart3, Tag, Settings, LogOut } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 const navItems = [
@@ -59,9 +59,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
         {/* Logo */}
         <div className="p-8 border-b border-orange-200/30">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-gradient-to-br from-orange-400 to-orange-500 rounded-xl shadow-md">
-              <Store className="w-6 h-6 text-white" />
-            </div>
+            <img src="/logo.png" alt="StreetBite" className="w-10 h-10 rounded-xl shadow-md" />
             <div>
               <h2 className="text-xl font-bold text-orange-800">StreetBite</h2>
               <p className="text-xs text-orange-600 font-medium">Vendor Portal</p>

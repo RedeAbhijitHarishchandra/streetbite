@@ -129,6 +129,10 @@ public class MenuController {
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updateMenuItem(@PathVariable Long id, @RequestBody Map<String, Object> updates) {
+        System.out.println("=== UPDATE MENU ITEM ===");
+        System.out.println("Item ID: " + id);
+        System.out.println("Updates received: " + updates);
+
         return menuService.getMenuItemById(id)
                 .map(existingItem -> {
                     if (updates.containsKey("name"))
@@ -145,12 +149,14 @@ public class MenuController {
                         existingItem.setImageUrl((String) updates.get("imageUrl"));
                     if (updates.containsKey("isAvailable")) {
                         Boolean isAvailable = (Boolean) updates.get("isAvailable");
+                        System.out.println("Setting isAvailable to: " + isAvailable);
                         existingItem.setAvailable(isAvailable);
                         // Sync to Firebase for real-time updates
                         realTimeSyncService.updateMenuAvailability(existingItem.getId(), isAvailable);
                     }
 
                     MenuItem saved = menuService.saveMenuItem(existingItem);
+                    System.out.println("Saved item isAvailable: " + saved.isAvailable());
                     return ResponseEntity.ok(saved);
                 })
                 .orElse(ResponseEntity.notFound().build());

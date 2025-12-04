@@ -96,6 +96,8 @@ public class AuthController {
             userData.put("id", savedUser.getId());
             userData.put("email", savedUser.getEmail());
             userData.put("displayName", savedUser.getDisplayName());
+            userData.put("phoneNumber", savedUser.getPhoneNumber());
+            userData.put("profilePicture", savedUser.getProfilePicture());
             userData.put("role", savedUser.getRole().name());
 
             // If user is a vendor, include the vendorId (we just created it)
@@ -151,6 +153,8 @@ public class AuthController {
             userData.put("id", user.getId());
             userData.put("email", user.getEmail());
             userData.put("displayName", user.getDisplayName());
+            userData.put("phoneNumber", user.getPhoneNumber());
+            userData.put("profilePicture", user.getProfilePicture());
             userData.put("role", user.getRole().name());
 
             // If user is a vendor, fetch and include vendorId
