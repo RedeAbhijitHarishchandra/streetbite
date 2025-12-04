@@ -57,7 +57,20 @@ export function Navbar() {
 
   // ... (scroll effect remains same)
 
-  // ... (handleLogout remains same)
+  const handleLogout = () => {
+    localStorage.removeItem('user')
+    localStorage.removeItem('firebaseUser')
+    setIsLoggedIn(false)
+    setUserName('')
+    router.push('/')
+  }
+
+  const navItems = [
+    { label: 'Explore', href: '/explore' },
+    { label: 'Offers', href: '/offers' },
+    { label: 'About', href: '/about' },
+    { label: 'Community', href: '/community' },
+  ]
 
   // Helper to resolve image URL
   const getImageUrl = (path: string) => {
@@ -67,8 +80,6 @@ export function Navbar() {
     const baseUrl = BACKEND_URL.replace(/\/api\/?$/, '');
     return `${baseUrl}${path.startsWith('/') ? '' : '/'}${path}`;
   };
-
-  // ... (navItems remains same)
 
   return (
     <nav className={`sticky top-0 z-50 transition-all duration-300 ${scrolled
