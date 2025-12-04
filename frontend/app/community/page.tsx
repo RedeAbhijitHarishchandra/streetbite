@@ -126,6 +126,18 @@ export default function CommunityPage() {
         });
     };
 
+    const scrollToSection = (id: string) => {
+        const element = document.getElementById(id);
+        if (element) {
+            element.scrollIntoView({ behavior: 'smooth' });
+        }
+    };
+
+    const handlePlayGames = () => {
+        setActiveTab('games');
+        scrollToSection('games');
+    };
+
     const tabs = [
         { id: 'games', label: 'Games', icon: Gamepad2 },
         { id: 'photos', label: 'Photos', icon: Camera },
@@ -170,11 +182,20 @@ export default function CommunityPage() {
                     </p>
 
                     <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-slide-up" style={{ animationDelay: '0.2s' }}>
-                        <Button size="lg" className="h-14 px-8 rounded-full text-lg font-bold bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 shadow-lg hover:shadow-xl hover:scale-105 transition-all">
+                        <Button
+                            size="lg"
+                            className="h-14 px-8 rounded-full text-lg font-bold bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 shadow-lg hover:shadow-xl hover:scale-105 transition-all"
+                            onClick={() => scrollToSection('discussions')}
+                        >
                             <MessageSquare className="w-5 h-5 mr-2" />
                             Join Discussion
                         </Button>
-                        <Button size="lg" variant="outline" className="h-14 px-8 rounded-full text-lg font-bold border-2 hover:bg-gray-50">
+                        <Button
+                            size="lg"
+                            variant="outline"
+                            className="h-14 px-8 rounded-full text-lg font-bold border-2 hover:bg-gray-50"
+                            onClick={handlePlayGames}
+                        >
                             <Gamepad2 className="w-5 h-5 mr-2" />
                             Play Games
                         </Button>
@@ -206,7 +227,7 @@ export default function CommunityPage() {
                         <ZodiacCard />
 
                         {/* Hot Discussions */}
-                        <Card className="border-none shadow-soft bg-white/80 backdrop-blur-xl overflow-hidden">
+                        <Card id="discussions" className="border-none shadow-soft bg-white/80 backdrop-blur-xl overflow-hidden">
                             <CardHeader className="pb-4 border-b border-gray-100">
                                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                                     <CardTitle className="text-xl flex items-center gap-2">
@@ -279,7 +300,7 @@ export default function CommunityPage() {
                         </Card>
 
                         {/* Content Tabs */}
-                        <Card className="border-none shadow-soft bg-white/80 backdrop-blur-xl overflow-hidden">
+                        <Card id="games" className="border-none shadow-soft bg-white/80 backdrop-blur-xl overflow-hidden">
                             <div className="border-b border-gray-100">
                                 <div className="flex p-2 gap-2 overflow-x-auto">
                                     {tabs.map(tab => {

@@ -30,7 +30,10 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
 
     // Load initial state
     useEffect(() => {
-        fetchStats()
+        const token = localStorage.getItem('token')
+        if (token) {
+            fetchStats()
+        }
     }, [])
 
     const fetchStats = async () => {
@@ -74,6 +77,9 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
     }
 
     const performAction = async (actionType: string) => {
+        const token = localStorage.getItem('token')
+        if (!token) return
+
         try {
             const response = await gamificationApi.performAction(actionType)
             if (response.success) {

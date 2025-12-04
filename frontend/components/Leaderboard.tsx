@@ -13,12 +13,20 @@ interface User {
 
 import { gamificationApi } from "@/lib/api";
 import { useEffect, useState } from "react";
+import { useGamification } from "@/context/GamificationContext";
 
 // ... User interface ...
 
 export function Leaderboard() {
+    const { xp, level, rank, displayName } = useGamification();
     const [leaderboard, setLeaderboard] = useState<User[]>([]);
     const [loading, setLoading] = useState(true);
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        setIsAuthenticated(!!token);
+    }, []);
 
     useEffect(() => {
         fetchLeaderboard();
@@ -127,23 +135,25 @@ export function Leaderboard() {
                     ))
                 )}
 
-                <div className="pt-2 mt-2">
-                    <div className="flex items-center justify-between p-3 bg-gradient-to-r from-gray-900 to-gray-800 rounded-xl shadow-lg text-white transform transition-transform hover:scale-[1.02] cursor-pointer group">
-                        <div className="flex items-center gap-3">
-                            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-400 to-indigo-500 flex items-center justify-center text-lg shadow-lg ring-2 ring-white/20">
-                                👤
+                {isAuthenticated && (
+                    <div className="pt-2 mt-2">
+                        <div className="flex items-center justify-between p-3 bg-gradient-to-r from-gray-900 to-gray-800 rounded-xl shadow-lg text-white transform transition-transform hover:scale-[1.02] cursor-pointer group">
+                            <div className="flex items-center gap-3">
+                                <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-400 to-indigo-500 flex items-center justify-center text-lg shadow-lg ring-2 ring-white/20">
+                                    👤
+                                </div>
+                                <div>
+                                    <div className="font-bold text-sm text-white group-hover:text-orange-300 transition-colors">You ({displayName || 'User'})</div>
+                                    <div className="text-[10px] text-gray-400 uppercase tracking-wider font-medium">Level {level}</div>
+                                </div>
                             </div>
-                            <div>
-                                <div className="font-bold text-sm text-white group-hover:text-orange-300 transition-colors">You</div>
-                                <div className="text-[10px] text-gray-400 uppercase tracking-wider font-medium">Level 12</div>
+                            <div className="text-right">
+                                <div className="text-sm font-black text-orange-400">{xp.toLocaleString()}</div>
+                                <div className="text-[10px] text-gray-500 font-bold">#{rank > 0 ? rank : '-'}</div>
                             </div>
-                        </div>
-                        <div className="text-right">
-                            <div className="text-sm font-black text-orange-400">2,340</div>
-                            <div className="text-[10px] text-gray-500 font-bold">#42</div>
                         </div>
                     </div>
-                </div>
+                )}
             </CardContent>
         </Card>
     );

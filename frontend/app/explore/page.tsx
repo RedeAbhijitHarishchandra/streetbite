@@ -26,6 +26,9 @@ export default function ExplorePage() {
   // Fetch favorites
   useEffect(() => {
     const fetchFavorites = async () => {
+      const token = localStorage.getItem('token')
+      if (!token) return
+
       try {
         const data = await favoriteApi.getUserFavorites()
         if (Array.isArray(data)) {

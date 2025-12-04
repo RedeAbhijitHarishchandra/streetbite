@@ -1,11 +1,11 @@
 // Replace YOUR_* placeholders with actual Firebase config values
 const firebaseConfig = {
-    apiKey: "AIzaSyAKDqyaU7Jvk49urkUuj69dv929sI3ADto",
-    authDomain: "streetbite-go.firebaseapp.com",
-    projectId: "streetbite-go",
-    storageBucket: "streetbite-go.firebasestorage.app",
-    messagingSenderId: "683361671426",
-    appId: "1:683361671426:web:76a5505163d225b0f8ca1b"
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_AUTH_DOMAIN",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_STORAGE_BUCKET",
+    messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+    appId: "YOUR_APP_ID"
 }
 
 // Import Firebase scripts
