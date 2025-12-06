@@ -43,10 +43,16 @@ export default function UserManagementPage() {
         }
     }
 
-    const filteredUsers = users.filter(user =>
-        user.displayName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        user.email?.toLowerCase().includes(searchTerm.toLowerCase())
-    )
+    const filteredUsers = users.filter(user => {
+        // Strict filter: User Management logic (Customers only)
+        // Explicitly exclude Vendors and Admins to address user feedback
+        if (user.role === 'VENDOR' || user.role === 'ADMIN') return false;
+
+        return (
+            (user.displayName || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+            (user.email || '').toLowerCase().includes(searchTerm.toLowerCase())
+        )
+    })
 
     if (loading) return <div className="p-8">Loading users...</div>
 
@@ -54,8 +60,8 @@ export default function UserManagementPage() {
         <div className="p-8 space-y-8">
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-3xl font-bold">User Management</h1>
-                    <p className="text-muted-foreground">Manage user accounts and permissions</p>
+                    <h1 className="text-3xl font-bold">Customer Management</h1>
+                    <p className="text-muted-foreground">Manage customer accounts and permissions</p>
                 </div>
                 <Link href="/admin">
                     <Button variant="outline">Back to Dashboard</Button>
@@ -65,7 +71,7 @@ export default function UserManagementPage() {
             <Card>
                 <CardHeader>
                     <div className="flex items-center justify-between">
-                        <CardTitle>All Users ({users.length})</CardTitle>
+                        <CardTitle>Customers ({filteredUsers.length})</CardTitle>
                         <div className="relative w-64">
                             <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
                             <input

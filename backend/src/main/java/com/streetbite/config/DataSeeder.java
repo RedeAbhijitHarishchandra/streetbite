@@ -3,6 +3,7 @@ package com.streetbite.config;
 import com.streetbite.model.User;
 import com.streetbite.model.Vendor;
 import com.streetbite.model.VendorStatus;
+import com.streetbite.repository.ReportRepository;
 import com.streetbite.repository.UserRepository;
 import com.streetbite.repository.VendorRepository;
 import org.springframework.boot.CommandLineRunner;
@@ -17,12 +18,17 @@ public class DataSeeder implements CommandLineRunner {
 
     private final VendorRepository vendorRepository;
     private final UserRepository userRepository;
+    private final ReportRepository reportRepository;
+    private final com.streetbite.repository.OrderRepository orderRepository;
     private final PasswordEncoder passwordEncoder;
 
     public DataSeeder(VendorRepository vendorRepository, UserRepository userRepository,
+            ReportRepository reportRepository, com.streetbite.repository.OrderRepository orderRepository,
             PasswordEncoder passwordEncoder) {
         this.vendorRepository = vendorRepository;
         this.userRepository = userRepository;
+        this.reportRepository = reportRepository;
+        this.orderRepository = orderRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -35,12 +41,26 @@ public class DataSeeder implements CommandLineRunner {
             System.out.println("Seeding database with dummy vendors...");
             seedVendors();
             System.out.println("Database seeding completed.");
+        } else {
+            // Ensure reports are seeded even if vendors exist
+            if (reportRepository.count() == 0) {
+                seedReports();
+            }
+        }
+
+        // Seed Orders for Analytics if none exist
+        if (orderRepository.count() == 0) {
+            System.out.println("Seeding past orders for analytics...");
+            seedOrders();
         }
     }
 
     private void seedUsers() {
         // Create or Update Admin User
         createOrUpdateUser("admin@streetbite.com", "admin123", "Admin User", User.Role.ADMIN);
+
+        // Create Team Admin User
+        createOrUpdateUser("teamstreetbite@gmail.com", "Admin@123", "Team StreetBite", User.Role.ADMIN);
 
         // Create or Update Regular User
         createOrUpdateUser("user@streetbite.com", "user123", "John Doe", User.Role.USER);
@@ -58,6 +78,7 @@ public class DataSeeder implements CommandLineRunner {
                     // Create new user
                     User user = new User();
                     user.setEmail(email);
+                    user.setFirebaseUid(java.util.UUID.randomUUID().toString());
                     user.setPasswordHash(passwordEncoder.encode(password));
                     user.setDisplayName(displayName);
                     user.setRole(role);
@@ -70,10 +91,12 @@ public class DataSeeder implements CommandLineRunner {
     private void seedVendors() {
         // Create Vendor Users first
         User vendor1 = createOrUpdateUser("vendor1@streetbite.com", "vendor123", "Raghu Owner", User.Role.VENDOR);
-        User vendor2 = createOrUpdateUser("vendor2@streetbite.com", "vendor123", "Mumbai Masala Owner", User.Role.VENDOR);
+        User vendor2 = createOrUpdateUser("vendor2@streetbite.com", "vendor123", "Mumbai Masala Owner",
+                User.Role.VENDOR);
         User vendor3 = createOrUpdateUser("vendor3@streetbite.com", "vendor123", "Spice Route Owner", User.Role.VENDOR);
         User vendor4 = createOrUpdateUser("vendor4@streetbite.com", "vendor123", "Dosa Plaza Owner", User.Role.VENDOR);
-        User vendor5 = createOrUpdateUser("vendor5@streetbite.com", "vendor123", "Kolkata Rolls Owner", User.Role.VENDOR);
+        User vendor5 = createOrUpdateUser("vendor5@streetbite.com", "vendor123", "Kolkata Rolls Owner",
+                User.Role.VENDOR);
 
         List<Vendor> vendors = Arrays.asList(
                 createVendor(
@@ -138,6 +161,63 @@ public class DataSeeder implements CommandLineRunner {
                         vendor5));
 
         vendorRepository.saveAll(vendors);
+    }
+
+    private void seedReports() {
+        com.streetbite.model.Report r1 = new com.streetbite.model.Report();
+        r1.setReporterId(1L); // Admin
+        r1.setReportedId(3L); // Vendor 1
+        r1.setType("VENDOR");
+        r1.setReason("Inappropriate images in gallery");
+        r1.setStatus("PENDING");
+        reportRepository.save(r1);
+
+        com.streetbite.model.Report r2 = new com.streetbite.model.Report();
+        r2.setReporterId(2L); // User
+        r2.setReportedId(4L); // Vendor 2
+        r2.setType("ORDER");
+        r2.setReason("Order never delivered");
+        r2.setStatus("RESOLVED");
+        reportRepository.save(r2);
+
+        com.streetbite.model.Report r3 = new com.streetbite.model.Report();
+        r3.setReporterId(2L); // User
+        r3.setReportedId(5L); // Vendor 3
+        r3.setType("REVIEW");
+        r3.setReason("Fake review detected");
+        r3.setStatus("PENDING");
+        reportRepository.save(r3);
+    }
+
+    private void seedOrders() {
+        java.util.List<User> users = userRepository.findAll();
+        java.util.List<Vendor> vendors = vendorRepository.findAll();
+        java.util.Random random = new java.util.Random();
+
+        if (users.isEmpty() || vendors.isEmpty())
+            return;
+
+        // Generate orders for the last 10 days
+        for (int i = 0; i < 50; i++) {
+            User user = users.get(random.nextInt(users.size()));
+            Vendor vendor = vendors.get(random.nextInt(vendors.size()));
+
+            com.streetbite.model.Order order = new com.streetbite.model.Order();
+            order.setUser(user);
+            order.setVendor(vendor);
+
+            // Random amount between 100 and 1000
+            double amount = 100 + (900 * random.nextDouble());
+            order.setTotalAmount(java.math.BigDecimal.valueOf(amount));
+
+            order.setStatus(com.streetbite.model.Order.OrderStatus.COMPLETED);
+
+            // Random date in last 10 days
+            int daysAgo = random.nextInt(10);
+            order.setCreatedAt(java.time.LocalDateTime.now().minusDays(daysAgo));
+
+            orderRepository.save(order);
+        }
     }
 
     private Vendor createVendor(String name, String description, String cuisine, String address,

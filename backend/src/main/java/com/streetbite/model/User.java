@@ -16,6 +16,9 @@ public class User {
     @Column(unique = true, nullable = false)
     private String email;
 
+    @Column(name = "firebase_uid", unique = true)
+    private String firebaseUid;
+
     @Column(name = "password_hash", nullable = false)
     @com.fasterxml.jackson.annotation.JsonIgnore
     private String passwordHash;
@@ -97,6 +100,14 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getFirebaseUid() {
+        return firebaseUid;
+    }
+
+    public void setFirebaseUid(String firebaseUid) {
+        this.firebaseUid = firebaseUid;
     }
 
     public String getPasswordHash() {

@@ -39,6 +39,6 @@ public class PromotionService {
     }
 
     public List<Promotion> getAllActivePromotions() {
-        return promotionRepository.findByIsActiveTrue();
+        return promotionRepository.findByIsActiveTrueAndVendorStatusNot(com.streetbite.model.VendorStatus.SUSPENDED);
     }
 }

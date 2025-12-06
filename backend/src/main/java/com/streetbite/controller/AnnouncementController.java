@@ -47,4 +47,13 @@ public class AnnouncementController {
                 })
                 .orElse(ResponseEntity.notFound().build());
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteAnnouncement(@PathVariable Long id) {
+        if (!announcementRepository.existsById(id)) {
+            return ResponseEntity.notFound().build();
+        }
+        announcementRepository.deleteById(id);
+        return ResponseEntity.ok().build();
+    }
 }

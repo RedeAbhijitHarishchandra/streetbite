@@ -15,4 +15,12 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<User> findTop10ByRoleOrderByXpDesc(User.Role role);
 
     List<User> findAllByOrderByXpDesc();
+
+    List<User> findByCreatedAtAfter(java.time.LocalDateTime date);
+
+    long countByCreatedAtAfter(java.time.LocalDateTime date);
+
+    long countByRole(User.Role role);
+
+    long countByRoleAndCreatedAtAfter(User.Role role, java.time.LocalDateTime date);
 }

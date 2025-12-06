@@ -12,9 +12,14 @@ interface Report {
     reporterId: number
     reportedId: number
     type: string
+    category: string // Added
+    subject: string // Added
+    description: string // Added
     reason: string
     status: string
     createdAt: string
+    email?: string // Added
+    role?: string // Added
 }
 
 export default function ReportsPage() {
@@ -75,10 +80,10 @@ export default function ReportsPage() {
                             <TableHeader>
                                 <TableRow>
                                     <TableHead>ID</TableHead>
-                                    <TableHead>Type</TableHead>
-                                    <TableHead>Reason</TableHead>
-                                    <TableHead>Reporter ID</TableHead>
-                                    <TableHead>Reported ID</TableHead>
+                                    <TableHead>Category</TableHead>
+                                    <TableHead>Subject</TableHead>
+                                    <TableHead>Description</TableHead>
+                                    <TableHead>Contact</TableHead>
                                     <TableHead>Date</TableHead>
                                     <TableHead>Status</TableHead>
                                     <TableHead>Actions</TableHead>
@@ -87,15 +92,24 @@ export default function ReportsPage() {
                             <TableBody>
                                 {reports.map((report) => (
                                     <TableRow key={report.id}>
-                                        <TableCell>#{report.id}</TableCell>
+                                        <TableCell className="font-medium">#{report.id}</TableCell>
                                         <TableCell>
-                                            <span className="font-medium">{report.type}</span>
+                                            <span className="font-medium">{report.category || report.type}</span>
                                         </TableCell>
-                                        <TableCell className="max-w-xs truncate" title={report.reason}>
-                                            {report.reason}
+                                        <TableCell className="font-medium">{report.subject || 'No Subject'}</TableCell>
+                                        <TableCell className="max-w-xs truncate" title={report.description || report.reason}>
+                                            {report.description || report.reason}
                                         </TableCell>
-                                        <TableCell>{report.reporterId}</TableCell>
-                                        <TableCell>{report.reportedId}</TableCell>
+                                        <TableCell>
+                                            {report.email ? (
+                                                <div className="flex flex-col">
+                                                    <span className="text-sm">{report.email}</span>
+                                                    <span className="text-xs text-muted-foreground">{report.role}</span>
+                                                </div>
+                                            ) : (
+                                                <span className="text-muted-foreground">Anonymous</span>
+                                            )}
+                                        </TableCell>
                                         <TableCell>{new Date(report.createdAt).toLocaleDateString()}</TableCell>
                                         <TableCell>
                                             <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(report.status)}`}>

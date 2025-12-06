@@ -210,8 +210,141 @@ export default function AboutPage() {
         </div>
       </section>
 
+      {/* Report Issue Section */}
+      <section className="py-24 px-6 bg-white border-t border-border/30">
+        <div className="max-w-3xl mx-auto">
+          <div className="text-center mb-12">
+            <p className="text-primary font-bold text-sm uppercase tracking-widest mb-4">Support</p>
+            <h2 className="text-4xl font-black text-foreground mb-4">Report an Issue</h2>
+            <p className="text-lg text-muted-foreground leading-relaxed">
+              Help us improve StreetBite. If you encounter any bugs or have concerns, let us know.
+            </p>
+          </div>
+
+          <div className="bg-card border border-border/40 rounded-3xl p-8 shadow-elevated">
+            <ReportForm />
+          </div>
+        </div>
+      </section>
+
       {/* Footer */}
       <Footer />
     </div>
+  )
+}
+
+import { useState } from 'react'
+import { reportApi } from '@/lib/api'
+import { Loader2 } from 'lucide-react'
+import { useToast } from '@/components/ui/use-toast'
+
+function ReportForm() {
+  const [loading, setLoading] = useState(false)
+  const [success, setSuccess] = useState(false)
+  const { toast } = useToast()
+  const [formData, setFormData] = useState({
+    subject: '',
+    description: '',
+    category: 'BUG',
+    email: ''
+  })
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setLoading(true)
+    try {
+      await reportApi.create({
+        ...formData,
+        role: 'CUSTOMER', // Explicitly marking as customer report
+        status: 'PENDING'
+      })
+      setSuccess(true)
+      setFormData({ subject: '', description: '', category: 'BUG', email: '' })
+      toast({
+        title: "Report Submitted",
+        description: "Thank you for your feedback. We will review it shortly.",
+      })
+    } catch (error) {
+      console.error('Report submission error:', error)
+      toast({
+        title: "Submission Failed",
+        description: "Please try again later.",
+        variant: "destructive"
+      })
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  if (success) {
+    return (
+      <div className="text-center py-12">
+        <div className="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4 animate-scale-in">
+          <CheckCircle size={32} />
+        </div>
+        <h3 className="text-2xl font-bold mb-2">Thank You!</h3>
+        <p className="text-muted-foreground mb-6">Your report has been submitted successfully.</p>
+        <Button onClick={() => setSuccess(false)} variant="outline">Submit Another</Button>
+      </div>
+    )
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-6">
+      <div className="grid md:grid-cols-2 gap-6">
+        <div className="space-y-2">
+          <label className="text-sm font-medium">Your Email (Optional)</label>
+          <input
+            type="email"
+            placeholder="For follow-up..."
+            value={formData.email}
+            onChange={e => setFormData({ ...formData, email: e.target.value })}
+            className="w-full px-4 py-3 bg-white/50 border border-input rounded-xl focus:ring-2 focus:ring-primary/20 outline-none"
+          />
+        </div>
+        <div className="space-y-2">
+          <label className="text-sm font-medium">Category</label>
+          <select
+            value={formData.category}
+            onChange={e => setFormData({ ...formData, category: e.target.value })}
+            className="w-full px-4 py-3 bg-white/50 border border-input rounded-xl focus:ring-2 focus:ring-primary/20 outline-none"
+          >
+            <option value="BUG">Bug Report</option>
+            <option value="COMPLAINT">Complaint</option>
+            <option value="SUGGESTION">Suggestion</option>
+            <option value="OTHER">Other</option>
+          </select>
+        </div>
+      </div>
+
+      <div className="space-y-2">
+        <label className="text-sm font-medium">Subject</label>
+        <input
+          required
+          type="text"
+          placeholder="Brief summary..."
+          value={formData.subject}
+          onChange={e => setFormData({ ...formData, subject: e.target.value })}
+          className="w-full px-4 py-3 bg-white/50 border border-input rounded-xl focus:ring-2 focus:ring-primary/20 outline-none"
+        />
+      </div>
+
+      <div className="space-y-2">
+        <label className="text-sm font-medium">Description</label>
+        <textarea
+          required
+          rows={4}
+          placeholder="Please describe the issue in detail..."
+          value={formData.description}
+          onChange={e => setFormData({ ...formData, description: e.target.value })}
+          className="w-full px-4 py-3 bg-white/50 border border-input rounded-xl focus:ring-2 focus:ring-primary/20 outline-none resize-none"
+        />
+      </div>
+
+      <Button type="submit" disabled={loading} className="w-full btn-gradient py-6 rounded-xl text-lg font-bold shadow-lg hover-lift">
+        {loading ? <Loader2 className="animate-spin mr-2" /> : null}
+        Submit Report
+      </Button>
+    </form>
   )
 }

@@ -13,6 +13,15 @@ import java.util.Optional;
 public class VendorService {
 
     @Autowired
+    private com.streetbite.repository.ReviewRepository reviewRepository;
+
+    @Autowired
+    private com.streetbite.repository.FavoriteRepository favoriteRepository;
+
+    @Autowired
+    private com.streetbite.repository.OrderRepository orderRepository;
+
+    @Autowired
     private VendorRepository vendorRepository;
 
     @Transactional
@@ -38,6 +47,12 @@ public class VendorService {
 
     @Transactional
     public void deleteVendor(Long id) {
+        // Manually cascade delete related entities
+        reviewRepository.deleteByVendorId(id);
+        favoriteRepository.deleteByVendorId(id);
+        orderRepository.deleteByVendorId(id);
+
+        // Finally delete the vendor
         vendorRepository.deleteById(id);
     }
 }

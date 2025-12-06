@@ -20,7 +20,6 @@ public class GamificationService {
     private static final int XP_COMPLETE_CHALLENGE = 50;
     private static final int XP_WIN_GAME = 100;
     private static final int XP_COMMUNITY_POST = 10;
-    private static final int XP_PER_LEVEL = 1000;
 
     /**
      * Award XP to a user for a specific action

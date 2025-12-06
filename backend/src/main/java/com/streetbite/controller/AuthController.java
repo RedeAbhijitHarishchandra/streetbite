@@ -61,6 +61,13 @@ public class AuthController {
             user.setPhoneNumber(phoneNumber);
             user.setRole(User.Role.valueOf(roleStr.toUpperCase()));
 
+            // Generate firebase_uid if not provided
+            String firebaseUid = (String) payload.get("firebaseUid");
+            if (firebaseUid == null || firebaseUid.isEmpty()) {
+                firebaseUid = java.util.UUID.randomUUID().toString();
+            }
+            user.setFirebaseUid(firebaseUid);
+
             User savedUser = userService.saveUser(user);
 
             // Create vendor profile if role is VENDOR

@@ -26,7 +26,7 @@ api.interceptors.response.use((res) => res.data, (error: any) => {
   if (error.response) {
     // Don't log 403 errors to console to avoid development overlay for banned users
     if (error.response.status !== 403) {
-      console.error('API Error Details:', {
+      console.warn('API Error Details:', {
         status: error.response.status,
         data: error.response.data,
         message: error.message,
@@ -41,7 +41,7 @@ api.interceptors.response.use((res) => res.data, (error: any) => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     // Optionally redirect to login
-    // window.location.href = '/signin';
+    window.location.href = '/signin';
   }
 
   return Promise.reject(error)
@@ -141,6 +141,7 @@ export const announcementApi = {
   getAll: () => api.get('/announcements') as Promise<any>,
   create: (data: any) => api.post('/announcements', data) as Promise<any>,
   updateStatus: (id: string | number, isActive: boolean) => api.put(`/announcements/${id}/status`, { isActive }) as Promise<any>,
+  delete: (id: string | number) => api.delete(`/announcements/${id}`) as Promise<any>,
 };
 
 export const reportApi = {

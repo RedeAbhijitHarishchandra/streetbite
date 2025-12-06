@@ -10,4 +10,6 @@ public interface VendorRepository extends JpaRepository<Vendor, Long> {
     List<Vendor> findByIsActiveTrue();
 
     List<Vendor> findByCuisineContainingIgnoreCase(String cuisine);
+
+    long countByCreatedAtAfter(java.time.LocalDateTime date);
 }

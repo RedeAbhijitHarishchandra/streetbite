@@ -81,7 +81,11 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
             if (stats.lastCheckIn) {
                 checkIfCheckedInToday(stats.lastCheckIn)
             }
-        } catch (error) {
+        } catch (error: any) {
+            // Ignore 401 (Unauthorized) - expected for Admin users who don't have gamification profiles
+            if (error?.response?.status === 401 || error?.status === 401) {
+                return;
+            }
             console.error("Failed to fetch gamification stats", error)
         }
     }

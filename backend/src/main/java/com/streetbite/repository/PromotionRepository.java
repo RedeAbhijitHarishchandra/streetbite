@@ -13,4 +13,6 @@ public interface PromotionRepository extends JpaRepository<Promotion, Long> {
     List<Promotion> findByVendorIdAndIsActiveTrue(Long vendorId);
 
     List<Promotion> findByIsActiveTrue();
+
+    List<Promotion> findByIsActiveTrueAndVendorStatusNot(com.streetbite.model.VendorStatus status);
 }

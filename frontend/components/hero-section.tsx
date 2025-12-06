@@ -11,7 +11,7 @@ export function HeroSection() {
       {/* CHANGE: simplified and repositioned background gradients for cleaner aesthetic */}
       <div className="absolute top-32 right-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl -z-10"></div>
       <div className="absolute bottom-0 left-0 w-96 h-96 bg-secondary/5 rounded-full blur-3xl -z-10"></div>
-      
+
       <div className="max-w-7xl mx-auto">
         <div className="grid lg:grid-cols-2 gap-16 items-center mb-16">
           {/* Left Content */}
@@ -27,7 +27,7 @@ export function HeroSection() {
                 Discover Local <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">Street Food</span> Around You
               </h1>
               <p className="text-xl text-muted-foreground max-w-xl leading-relaxed font-medium">
-                Explore nearby vendors with real-time updates, authentic reviews, and incredible flavors waiting to be discovered
+                Explore nearby vendors with real-time updates, authentic reviews, and incredible flavors waiting to be discovered. No ordering, just pure discovery!
               </p>
             </div>
 
@@ -36,7 +36,7 @@ export function HeroSection() {
               <Link href="/explore">
                 <Button size="lg" className="bg-primary hover:bg-primary/90 text-white shadow-lg hover:shadow-xl transition-all font-semibold">
                   <ChefHat size={20} />
-                  Explore Now
+                  Find Vendors
                 </Button>
               </Link>
               <Link href="/signup">
@@ -70,7 +70,7 @@ export function HeroSection() {
                 <div className="absolute top-8 right-12 w-40 h-40 bg-primary/10 rounded-3xl rotate-45"></div>
                 <div className="absolute bottom-16 left-8 w-48 h-48 bg-secondary/10 rounded-full"></div>
               </div>
-              
+
               <div className="relative z-10 text-center space-y-4">
                 <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-primary/20 border-2 border-primary/30">
                   <ChefHat size={40} className="text-primary" />

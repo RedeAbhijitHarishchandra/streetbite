@@ -62,7 +62,7 @@ export default function Home() {
               <Link href="/explore">
                 <Button size="lg" className="h-16 px-10 rounded-full text-lg font-semibold btn-gradient shadow-elevated hover-lift hover-glow group border-none">
                   <Search className="mr-2 h-6 w-6 group-hover:scale-110 transition-transform" />
-                  Find Food Now
+                  Discover Nearby
                   <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
                 </Button>
               </Link>

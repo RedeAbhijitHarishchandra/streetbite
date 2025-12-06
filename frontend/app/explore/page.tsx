@@ -34,8 +34,11 @@ export default function ExplorePage() {
         if (Array.isArray(data)) {
           setFavorites(data)
         }
-      } catch (error) {
-        console.error('Error fetching favorites:', error)
+      } catch (error: any) {
+        // Suppress 401 errors (expected if token expired)
+        if (error.response?.status !== 401) {
+          console.error('Error fetching favorites:', error)
+        }
       }
     }
     fetchFavorites()

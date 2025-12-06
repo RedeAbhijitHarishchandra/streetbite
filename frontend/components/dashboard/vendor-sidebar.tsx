@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Home, Menu, BarChart3, Tag, Settings, LogOut } from 'lucide-react'
+import { Home, Menu, BarChart3, Tag, Settings, LogOut, HelpCircle } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 const navItems = [
@@ -25,6 +25,11 @@ const navItems = [
     label: 'Promotions',
     href: '/vendor/promotions',
     icon: Tag,
+  },
+  {
+    label: 'Support',
+    href: '/vendor/support',
+    icon: HelpCircle,
   },
   {
     label: 'Settings',

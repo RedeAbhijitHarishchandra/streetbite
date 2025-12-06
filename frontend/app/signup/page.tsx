@@ -68,14 +68,14 @@ export default function SignUpPage() {
         router.push('/explore')
       }
     } catch (err: any) {
-      console.error('Registration error:', err)
-
-      // Handle User Already Exists (409)
+      // Handle User Already Exists (409) - Check this FIRST and don't log as error
       if (err.response?.status === 409 || err.message?.includes('409')) {
         setShowUserExistsModal(true)
         setIsLoading(false)
         return
       }
+
+      console.error('Registration error:', err)
 
       let errorMessage = 'Registration failed. Please try again.'
 

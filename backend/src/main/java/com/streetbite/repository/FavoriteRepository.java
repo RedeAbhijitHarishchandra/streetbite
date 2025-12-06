@@ -13,6 +13,8 @@ public interface FavoriteRepository extends JpaRepository<Favorite, Long> {
     // Find all favorites for a user
     List<Favorite> findByUserId(Long userId);
 
+    long countByCreatedAtAfter(java.time.LocalDateTime date);
+
     // Check if a vendor is favorited by a user
     Optional<Favorite> findByUserIdAndVendorId(Long userId, Long vendorId);
 
@@ -21,6 +23,8 @@ public interface FavoriteRepository extends JpaRepository<Favorite, Long> {
 
     // Delete a favorite
     void deleteByUserIdAndVendorId(Long userId, Long vendorId);
+
+    void deleteByVendorId(Long vendorId);
 
     // Get favorite vendors for a user (with vendor details)
     @Query("SELECT f.vendor FROM Favorite f WHERE f.user.id = :userId ORDER BY f.createdAt DESC")
