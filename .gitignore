@@ -5,6 +5,7 @@ firebase-key.json.real
 firebase-key.json.local
 firebase-key.json.backup
 *-firebase-adminsdk-*.json
+frontend/public/firebase-messaging-sw.js
 hs_err_pid*.log
 replay_pid*.log
 
