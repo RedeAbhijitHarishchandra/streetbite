@@ -13,7 +13,6 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/gamification")
-@CrossOrigin(origins = "*")
 public class GamificationController {
 
     @Autowired

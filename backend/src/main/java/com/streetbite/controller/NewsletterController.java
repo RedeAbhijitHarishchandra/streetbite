@@ -13,7 +13,6 @@ import java.util.regex.Pattern;
 
 @RestController
 @RequestMapping("/api/newsletter")
-@CrossOrigin(origins = "*")
 public class NewsletterController {
 
     @Autowired

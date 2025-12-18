@@ -15,7 +15,6 @@ import java.time.format.DateTimeFormatter;
 
 @RestController
 @RequestMapping("/api/analytics")
-@CrossOrigin(origins = "*")
 public class AnalyticsController {
 
     private final com.streetbite.repository.UserRepository userRepository;
