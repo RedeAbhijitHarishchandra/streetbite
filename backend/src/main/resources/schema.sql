@@ -1,35 +1,8 @@
--- StreetBite Full Database Schema
+-- StreetBite Database Schema
 -- Automaticaly executed by Spring Boot on startup
 
--- Set foreign key checks to 0 to facilitate dropping tables
-SET FOREIGN_KEY_CHECKS = 0;
-
--- Drop existing tables
-DROP TABLE IF EXISTS search_history;
-DROP TABLE IF EXISTS favorites;
-DROP TABLE IF EXISTS review_images;
-DROP TABLE IF EXISTS reviews;
-DROP TABLE IF EXISTS order_items;
-DROP TABLE IF EXISTS orders;
-DROP TABLE IF EXISTS user_favorites;
-DROP TABLE IF EXISTS promotions;
-DROP TABLE IF EXISTS menu_items;
-DROP TABLE IF EXISTS vendor_images;
-DROP TABLE IF EXISTS vendors;
-DROP TABLE IF EXISTS users;
-DROP TABLE IF EXISTS reports;
-DROP TABLE IF EXISTS geocode_cache;
-DROP TABLE IF EXISTS announcements;
-DROP TABLE IF EXISTS hot_topics;
-DROP TABLE IF EXISTS topic_comments;
-DROP TABLE IF EXISTS topic_likes;
-DROP TABLE IF EXISTS analytics_events;
-DROP TABLE IF EXISTS user_devices;
-
-SET FOREIGN_KEY_CHECKS = 1;
-
--- 1. USERS TABLE
-CREATE TABLE users (
+-- USERS TABLE
+CREATE TABLE IF NOT EXISTS users (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     email VARCHAR(255) NOT NULL UNIQUE,
     firebase_uid VARCHAR(255) UNIQUE,
@@ -53,7 +26,7 @@ CREATE TABLE users (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- 2. VENDORS TABLE
-CREATE TABLE vendors (
+CREATE TABLE IF NOT EXISTS vendors (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     owner_id BIGINT,
     name VARCHAR(255) NOT NULL,
@@ -77,7 +50,7 @@ CREATE TABLE vendors (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- 3. VENDOR IMAGES
-CREATE TABLE vendor_images (
+CREATE TABLE IF NOT EXISTS vendor_images (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     vendor_id BIGINT NOT NULL,
     image_url VARCHAR(500) NOT NULL,
@@ -85,7 +58,7 @@ CREATE TABLE vendor_images (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- 4. MENU ITEMS
-CREATE TABLE menu_items (
+CREATE TABLE IF NOT EXISTS menu_items (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     vendor_id BIGINT NOT NULL,
     name VARCHAR(255) NOT NULL,
@@ -101,7 +74,7 @@ CREATE TABLE menu_items (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- 5. REVIEWS
-CREATE TABLE reviews (
+CREATE TABLE IF NOT EXISTS reviews (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     vendor_id BIGINT NOT NULL,
     user_id BIGINT NOT NULL,
@@ -113,7 +86,7 @@ CREATE TABLE reviews (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- 6. REVIEW IMAGES
-CREATE TABLE review_images (
+CREATE TABLE IF NOT EXISTS review_images (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     review_id BIGINT NOT NULL,
     image_url VARCHAR(500) NOT NULL,
@@ -121,7 +94,7 @@ CREATE TABLE review_images (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- 7. ORDERS
-CREATE TABLE orders (
+CREATE TABLE IF NOT EXISTS orders (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     user_id BIGINT NOT NULL,
     vendor_id BIGINT NOT NULL,
@@ -133,7 +106,7 @@ CREATE TABLE orders (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- 8. ORDER ITEMS
-CREATE TABLE order_items (
+CREATE TABLE IF NOT EXISTS order_items (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     order_id BIGINT NOT NULL,
     menu_item_id BIGINT NOT NULL,
@@ -144,7 +117,7 @@ CREATE TABLE order_items (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- 9. USER FAVORITES
-CREATE TABLE user_favorites (
+CREATE TABLE IF NOT EXISTS user_favorites (
     user_id BIGINT NOT NULL,
     vendor_id BIGINT NOT NULL,
     PRIMARY KEY (user_id, vendor_id),
@@ -153,7 +126,7 @@ CREATE TABLE user_favorites (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- 10. PROMOTIONS
-CREATE TABLE promotions (
+CREATE TABLE IF NOT EXISTS promotions (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     vendor_id BIGINT NOT NULL,
     title VARCHAR(255) NOT NULL,
@@ -173,7 +146,7 @@ CREATE TABLE promotions (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- 11. GEOCODE CACHE
-CREATE TABLE geocode_cache (
+CREATE TABLE IF NOT EXISTS geocode_cache (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     address VARCHAR(500) NOT NULL UNIQUE,
     latitude DOUBLE NOT NULL,
@@ -182,7 +155,7 @@ CREATE TABLE geocode_cache (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- 12. REPORTS
-CREATE TABLE reports (
+CREATE TABLE IF NOT EXISTS reports (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     reporter_id BIGINT,
     reported_id BIGINT,
@@ -198,7 +171,7 @@ CREATE TABLE reports (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- 13. ANNOUNCEMENTS
-CREATE TABLE announcements (
+CREATE TABLE IF NOT EXISTS announcements (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     message VARCHAR(1000) NOT NULL,
     type VARCHAR(50) NOT NULL,
@@ -207,7 +180,7 @@ CREATE TABLE announcements (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- 14. HOT TOPICS
-CREATE TABLE hot_topics (
+CREATE TABLE IF NOT EXISTS hot_topics (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
     content TEXT NOT NULL,
@@ -218,7 +191,7 @@ CREATE TABLE hot_topics (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- 15. TOPIC COMMENTS
-CREATE TABLE topic_comments (
+CREATE TABLE IF NOT EXISTS topic_comments (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     topic_id BIGINT NOT NULL,
     user_id BIGINT NOT NULL,
@@ -229,7 +202,7 @@ CREATE TABLE topic_comments (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- 16. TOPIC LIKES
-CREATE TABLE topic_likes (
+CREATE TABLE IF NOT EXISTS topic_likes (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     topic_id BIGINT NOT NULL,
     user_id BIGINT NOT NULL,
@@ -240,7 +213,7 @@ CREATE TABLE topic_likes (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- 17. ANALYTICS EVENTS
-CREATE TABLE analytics_events (
+CREATE TABLE IF NOT EXISTS analytics_events (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     user_id BIGINT,
     event_type VARCHAR(255),
@@ -250,7 +223,7 @@ CREATE TABLE analytics_events (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- 18. USER DEVICES
-CREATE TABLE user_devices (
+CREATE TABLE IF NOT EXISTS user_devices (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     user_id BIGINT NOT NULL,
     device_token VARCHAR(255) NOT NULL,

@@ -21,7 +21,7 @@ public class SecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(12); // Strength 12 for good security
+        return new BCryptPasswordEncoder(10); // Strength 10 for better startup performance on Render
     }
 
     @Autowired
