@@ -70,8 +70,8 @@ export default function RootLayout({
         </GamificationProvider>
         <Analytics />
         <Script
-          src={`https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=places`}
-          strategy="beforeInteractive"
+          src={`https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=places&loading=async`}
+          strategy="afterInteractive"
         />
       </body>
     </html>
