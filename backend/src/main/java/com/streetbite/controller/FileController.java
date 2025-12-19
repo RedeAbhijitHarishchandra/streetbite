@@ -34,6 +34,7 @@ public class FileController {
 
     @PostMapping("/upload")
     public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file) {
+        System.out.println("Starting file upload: " + file.getOriginalFilename() + " (size: " + file.getSize() + ")");
         try {
             // Normalize file name
             String originalFileName = org.springframework.util.StringUtils.cleanPath(file.getOriginalFilename());
@@ -43,17 +44,18 @@ public class FileController {
             }
 
             String fileName = UUID.randomUUID().toString() + fileExtension;
+            System.out.println("Saving file as: " + fileName);
 
-            // Copy file to the target location (Replacing existing file with the same name)
+            // Copy file to the target location
             Path targetLocation = this.fileStorageLocation.resolve(fileName);
             Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
+            System.out.println("File saved successfully to: " + targetLocation.toString());
 
-            // Return the file download URI
-            // Assuming the backend is running on localhost:8081
             String fileDownloadUri = "/api/files/download/" + fileName;
-
             return ResponseEntity.ok(Map.of("url", fileDownloadUri));
-        } catch (IOException ex) {
+        } catch (Exception ex) {
+            System.err.println("UPLOAD ERROR: " + ex.getMessage());
+            ex.printStackTrace();
             return ResponseEntity.status(500).body(Map.of("error", "Could not upload file: " + ex.getMessage()));
         }
     }

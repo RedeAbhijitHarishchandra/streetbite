@@ -76,13 +76,17 @@ public class DataSeeder implements CommandLineRunner {
     private User createOrUpdateUser(String email, String password, String displayName, User.Role role) {
         return userRepository.findByEmail(email)
                 .map(existingUser -> {
-                    // Update existing user password just in case
-                    existingUser.setPasswordHash(passwordEncoder.encode(password));
-                    existingUser.setRole(role); // Ensure role is correct
-                    return userRepository.save(existingUser);
+                    // Update role if changed, but DON'T overwrite password for existing users in
+                    // production
+                    if (existingUser.getRole() != role) {
+                        existingUser.setRole(role);
+                        return userRepository.save(existingUser);
+                    }
+                    return existingUser;
                 })
                 .orElseGet(() -> {
                     // Create new user
+                    System.out.println("Seeding new user: " + email);
                     User user = new User();
                     user.setEmail(email);
                     user.setFirebaseUid(java.util.UUID.randomUUID().toString());
