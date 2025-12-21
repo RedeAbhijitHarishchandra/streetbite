@@ -52,7 +52,11 @@ export function VendorCard({ id, name, cuisine, rating, distance, image, display
 
           <div className="flex items-center gap-2 text-muted-foreground text-sm">
             <MapPin size={16} className="text-primary flex-shrink-0" />
-            <span className="font-medium">{distance}</span>
+            <span className="font-medium">
+              {!isNaN(parseFloat(distance))
+                ? `${parseFloat(distance).toFixed(1)} km`
+                : distance}
+            </span>
           </div>
 
           {/* Tags with gradient backgrounds */}
