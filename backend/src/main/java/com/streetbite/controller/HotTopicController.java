@@ -60,7 +60,14 @@ public class HotTopicController {
             User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
 
             TopicComment comment = hotTopicService.addComment(id, user.getId(), payload.get("text"));
-            return ResponseEntity.ok(comment);
+
+            // Return simple response to avoid serialization issues
+            return ResponseEntity.ok(Map.of(
+                    "id", comment.getId(),
+                    "content", comment.getContent(),
+                    "createdAt", comment.getCreatedAt().toString(),
+                    "userId", user.getId(),
+                    "userName", user.getDisplayName() != null ? user.getDisplayName() : user.getEmail()));
         } catch (Exception e) {
             System.err.println("Failed to add comment: " + e.getMessage());
             e.printStackTrace();
