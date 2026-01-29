@@ -2,6 +2,7 @@ package com.streetbite.service;
 
 import com.streetbite.model.Vendor;
 import com.streetbite.repository.VendorRepository;
+import com.streetbite.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +24,9 @@ public class VendorService {
 
     @Autowired
     private VendorRepository vendorRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Transactional
     public Vendor saveVendor(Vendor vendor) {
@@ -47,12 +51,27 @@ public class VendorService {
 
     @Transactional
     public void deleteVendor(Long id) {
+        // Get vendor first to access owner
+        Optional<Vendor> vendorOpt = vendorRepository.findById(id);
+        Long ownerId = null;
+        if (vendorOpt.isPresent()) {
+            Vendor vendor = vendorOpt.get();
+            if (vendor.getOwner() != null) {
+                ownerId = vendor.getOwner().getId();
+            }
+        }
+
         // Manually cascade delete related entities
         reviewRepository.deleteByVendorId(id);
         favoriteRepository.deleteByVendorId(id);
         orderRepository.deleteByVendorId(id);
 
-        // Finally delete the vendor
+        // Delete the vendor
         vendorRepository.deleteById(id);
+
+        // Also delete the owner User so they can re-register
+        if (ownerId != null) {
+            userRepository.deleteById(ownerId);
+        }
     }
 }
