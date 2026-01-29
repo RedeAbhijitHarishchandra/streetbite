@@ -6,29 +6,34 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
-import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 
 @Service
 public class EmailService {
 
-    @Autowired
+    @Autowired(required = false)
     private JavaMailSender mailSender;
 
     @Value("${FRONTEND_URL:http://localhost:3000}")
     private String frontendUrl;
 
-    @Value("${spring.mail.username}")
+    @Value("${spring.mail.username:noreply@streetbite.com}")
     private String fromEmail;
 
     public void sendPasswordResetEmail(String to, String token) {
         String resetLink = frontendUrl + "/reset-password?token=" + token;
 
-        // Log the link for development/debugging
+        // ALWAYS log the link so it can be retrieved from Render logs
         System.out.println("==================================================");
         System.out.println("PASSWORD RESET LINK FOR: " + to);
         System.out.println(resetLink);
         System.out.println("==================================================");
+
+        // If mail sender is not configured, just log and return
+        if (mailSender == null) {
+            System.err.println("JavaMailSender not configured - email not sent. Check mail properties.");
+            return;
+        }
 
         try {
             MimeMessage message = mailSender.createMimeMessage();
@@ -60,9 +65,11 @@ public class EmailService {
             mailSender.send(message);
 
             System.out.println("Password reset email sent successfully to " + to);
-        } catch (MessagingException e) {
-            System.err.println("Failed to send email: " + e.getMessage());
+        } catch (Exception e) {
+            // Catch ALL exceptions - don't let email failure crash the request
+            System.err.println("Failed to send email to " + to + ": " + e.getMessage());
             e.printStackTrace();
+            // Don't rethrow - the reset link is in the logs anyway
         }
     }
 }
