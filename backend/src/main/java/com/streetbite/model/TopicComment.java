@@ -17,6 +17,7 @@ public class TopicComment {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", nullable = false)
+    @com.fasterxml.jackson.annotation.JsonIgnoreProperties({ "hibernateLazyInitializer", "handler", "favorites" })
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)

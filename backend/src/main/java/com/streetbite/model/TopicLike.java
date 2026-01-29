@@ -14,6 +14,7 @@ public class TopicLike {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
+    @com.fasterxml.jackson.annotation.JsonIgnoreProperties({ "hibernateLazyInitializer", "handler", "favorites" })
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
