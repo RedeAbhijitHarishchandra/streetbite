@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { Logo } from '@/components/logo'
 import { Button } from '@/components/ui/button'
-import { ArrowLeft, ChevronRight, Sparkles } from 'lucide-react'
+import { ArrowLeft, ChevronRight, Sparkles, Eye, EyeOff } from 'lucide-react'
 import { authApi } from '@/lib/api'
 import { useUserLocation } from '@/lib/useUserLocation'
 
@@ -25,6 +25,7 @@ export default function SignUpPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [passwordStrength, setPasswordStrength] = useState(0)
+  const [showPassword, setShowPassword] = useState(false)
   const { location } = useUserLocation()
 
   const [showUserExistsModal, setShowUserExistsModal] = useState(false)
@@ -263,39 +264,48 @@ export default function SignUpPage() {
                   <label className="block text-sm font-black text-black uppercase tracking-wider ml-1">Email Address</label>
                   <input
                     type="email"
-                    placeholder="YOU@EXAMPLE.COM"
+                    placeholder="you@example.com"
                     value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value.toLowerCase() })}
                     required
-                    className="w-full px-4 py-4 border-4 border-black rounded-xl text-lg font-bold focus:outline-none focus:ring-4 focus:ring-yellow-400 bg-gray-50 transition-all placeholder:text-gray-300 uppercase"
+                    className="w-full px-4 py-4 border-4 border-black rounded-xl text-lg font-bold focus:outline-none focus:ring-4 focus:ring-yellow-400 bg-gray-50 transition-all placeholder:text-gray-300 lowercase"
                   />
                 </div>
 
                 <div className="space-y-2 relative z-10">
                   <label className="block text-sm font-black text-black uppercase tracking-wider ml-1">Password</label>
-                  <input
-                    type="password"
-                    placeholder="MAKE IT STRONG"
-                    value={formData.password}
-                    onChange={(e) => {
-                      const newPass = e.target.value
-                      setFormData({ ...formData, password: newPass })
+                  <div className="relative">
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      placeholder="MAKE IT STRONG"
+                      value={formData.password}
+                      onChange={(e) => {
+                        const newPass = e.target.value
+                        setFormData({ ...formData, password: newPass })
 
-                      // Password Strength Logic
-                      let score = 0
-                      if (newPass.length >= 8) score++
-                      if (/[A-Z]/.test(newPass)) score++
-                      if (/[a-z]/.test(newPass)) score++
-                      if (/[0-9]/.test(newPass)) score++
-                      if (/[^A-Za-z0-9]/.test(newPass)) score++
-                      const common = ['password', '123456', 'qwerty', 'streetbite', '12345678']
-                      if (common.some(c => newPass.toLowerCase().includes(c))) score = 0
-                      setPasswordStrength(score)
-                    }}
-                    required
-                    minLength={8}
-                    className="w-full px-4 py-4 border-4 border-black rounded-xl text-lg font-bold focus:outline-none focus:ring-4 focus:ring-yellow-400 bg-gray-50 transition-all placeholder:text-gray-300"
-                  />
+                        // Password Strength Logic
+                        let score = 0
+                        if (newPass.length >= 8) score++
+                        if (/[A-Z]/.test(newPass)) score++
+                        if (/[a-z]/.test(newPass)) score++
+                        if (/[0-9]/.test(newPass)) score++
+                        if (/[^A-Za-z0-9]/.test(newPass)) score++
+                        const common = ['password', '123456', 'qwerty', 'streetbite', '12345678']
+                        if (common.some(c => newPass.toLowerCase().includes(c))) score = 0
+                        setPasswordStrength(score)
+                      }}
+                      required
+                      minLength={8}
+                      className="w-full px-4 py-4 pr-14 border-4 border-black rounded-xl text-lg font-bold focus:outline-none focus:ring-4 focus:ring-yellow-400 bg-gray-50 transition-all placeholder:text-gray-300"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-black transition-colors p-1"
+                    >
+                      {showPassword ? <EyeOff size={24} /> : <Eye size={24} />}
+                    </button>
+                  </div>
 
                   {/* Password Strength Meter */}
                   {formData.password && (
