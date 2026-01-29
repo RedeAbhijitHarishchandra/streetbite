@@ -551,7 +551,7 @@ export default function CommunityPage() {
                                             </div>
                                         </div>
                                     </div>
-                                    <p className="text-base font-medium text-gray-800 pl-13 leading-relaxed">{comment.text}</p>
+                                    <p className="text-base font-medium text-gray-800 pl-13 leading-relaxed">{comment.content}</p>
                                 </div>
                             ))}
                             {(!selectedDiscussion.comments || selectedDiscussion.comments.length === 0) && (
