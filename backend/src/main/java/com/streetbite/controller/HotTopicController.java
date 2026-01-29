@@ -53,20 +53,32 @@ public class HotTopicController {
     }
 
     @PostMapping("/{id}/comment")
-    public TopicComment addComment(@PathVariable Long id, @RequestBody Map<String, String> payload,
+    public ResponseEntity<?> addComment(@PathVariable Long id, @RequestBody Map<String, String> payload,
             @RequestHeader("Authorization") String token) {
-        String email = jwtUtil.extractEmail(token.substring(7));
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
+        try {
+            String email = jwtUtil.extractEmail(token.substring(7));
+            User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
 
-        return hotTopicService.addComment(id, user.getId(), payload.get("text"));
+            TopicComment comment = hotTopicService.addComment(id, user.getId(), payload.get("text"));
+            return ResponseEntity.ok(comment);
+        } catch (Exception e) {
+            System.err.println("Failed to add comment: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
     }
 
     @PostMapping("/{id}/like")
     public ResponseEntity<?> toggleLike(@PathVariable Long id, @RequestHeader("Authorization") String token) {
-        String email = jwtUtil.extractEmail(token.substring(7));
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
+        try {
+            String email = jwtUtil.extractEmail(token.substring(7));
+            User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
 
-        hotTopicService.toggleLike(id, user.getId());
-        return ResponseEntity.ok().build();
+            hotTopicService.toggleLike(id, user.getId());
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            System.err.println("Failed to toggle like: " + e.getMessage());
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
     }
 }
