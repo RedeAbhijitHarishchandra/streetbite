@@ -86,7 +86,7 @@ export default function SignInPage() {
           'service_midq5w9',  // Service ID
           'template_9kjapde', // Template ID
           {
-            to_email: resetEmail,
+            email: resetEmail,
             reset_link: response.resetLink,
           },
           'Eg29JibQYRJQr591a' // Public Key
