@@ -54,9 +54,19 @@ public class HotTopicController {
 
     @PostMapping("/{id}/comment")
     public ResponseEntity<?> addComment(@PathVariable Long id, @RequestBody Map<String, String> payload,
-            @RequestHeader("Authorization") String token) {
+            @RequestHeader(value = "Authorization", required = false) String token) {
         try {
-            String email = jwtUtil.extractEmail(token.substring(7));
+            // Validate token
+            if (token == null || !token.startsWith("Bearer ") || token.length() < 10) {
+                return ResponseEntity.status(401).body(Map.of("error", "Please log in to comment"));
+            }
+
+            String jwtToken = token.substring(7);
+            if (!jwtToken.contains(".") || jwtToken.split("\\.").length != 3) {
+                return ResponseEntity.status(401).body(Map.of("error", "Invalid session. Please log in again"));
+            }
+
+            String email = jwtUtil.extractEmail(jwtToken);
             User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
 
             TopicComment comment = hotTopicService.addComment(id, user.getId(), payload.get("text"));
@@ -76,9 +86,20 @@ public class HotTopicController {
     }
 
     @PostMapping("/{id}/like")
-    public ResponseEntity<?> toggleLike(@PathVariable Long id, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<?> toggleLike(@PathVariable Long id,
+            @RequestHeader(value = "Authorization", required = false) String token) {
         try {
-            String email = jwtUtil.extractEmail(token.substring(7));
+            // Validate token
+            if (token == null || !token.startsWith("Bearer ") || token.length() < 10) {
+                return ResponseEntity.status(401).body(Map.of("error", "Please log in to like"));
+            }
+
+            String jwtToken = token.substring(7);
+            if (!jwtToken.contains(".") || jwtToken.split("\\.").length != 3) {
+                return ResponseEntity.status(401).body(Map.of("error", "Invalid session. Please log in again"));
+            }
+
+            String email = jwtUtil.extractEmail(jwtToken);
             User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
 
             hotTopicService.toggleLike(id, user.getId());
