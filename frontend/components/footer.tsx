@@ -155,24 +155,24 @@ export function Footer() {
                             title: "Explore", links: [
                                 { label: "Find Food", href: "/explore" },
                                 { label: "Trending", href: "/explore?sort=trending" },
-                                { label: "Categories", href: "/explore" },
-                                { label: "Live Map", href: "/map" }
+                                { label: "Community", href: "/community" },
+                                { label: "Offers", href: "/offers" }
                             ]
                         },
                         {
                             title: "Company", links: [
                                 { label: "About Us", href: "/about" },
-                                { label: "Our Story", href: "/about" },
-                                { label: "Careers", href: "/careers" },
-                                { label: "Press", href: "/press" }
+                                { label: "Become a Vendor", href: "/signup?type=vendor" },
+                                { label: "Terms of Service", href: "/terms" },
+                                { label: "Privacy Policy", href: "/privacy" }
                             ]
                         },
                         {
                             title: "Support", links: [
-                                { label: "Help Center", href: "/help" },
-                                { label: "Partner with us", href: "/signup?type=vendor" },
-                                { label: "Terms of Service", href: "/terms" },
-                                { label: "Privacy Policy", href: "/privacy" }
+                                { label: "Contact Us", href: "/about#contact" },
+                                { label: "Refund Policy", href: "/refund" },
+                                { label: "Cookie Policy", href: "/cookies" },
+                                { label: "All Vendors", href: "/vendors" }
                             ]
                         }
                     ].map((column, idx) => (

@@ -111,10 +111,20 @@ export default function ExplorePage() {
   ]
 
   // filter from Firestore-backed vendors
-  const filteredVendors = vendors.filter(vendor =>
-    vendor.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    (vendor.cuisine || '').toLowerCase().includes(searchTerm.toLowerCase())
-  )
+  const filteredVendors = vendors.filter(vendor => {
+    // Search filter - matches name or cuisine text
+    const matchesSearch =
+      vendor.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (vendor.cuisine || '').toLowerCase().includes(searchTerm.toLowerCase())
+
+    // Cuisine filter - matches selected cuisine category
+    const matchesCuisine = selectedFilter === 'all' ||
+      (vendor.cuisine || '').toLowerCase().includes(selectedFilter.toLowerCase()) ||
+      // Handle special case for "middle-east" filter matching "middle eastern"
+      (selectedFilter === 'middle-east' && (vendor.cuisine || '').toLowerCase().includes('middle'))
+
+    return matchesSearch && matchesCuisine
+  })
 
   return (
     <div className="min-h-screen bg-[#FFFBF0] bg-[radial-gradient(#E5E7EB_1px,transparent_1px)] [background-size:24px_24px]">

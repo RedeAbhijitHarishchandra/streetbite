@@ -544,13 +544,6 @@ export default function VendorDetailsPage() {
                                                         <span className="text-xs font-semibold bg-orange-50 text-orange-700 px-3 py-1.5 rounded-full uppercase tracking-wide">
                                                             {item.category}
                                                         </span>
-                                                        <Button
-                                                            size="sm"
-                                                            disabled={!getAvailability(item.id || item.itemId)}
-                                                            className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-semibold hover:scale-105 transition-all disabled:opacity-50"
-                                                        >
-                                                            Add +
-                                                        </Button>
                                                     </div>
                                                 </div>
                                             </div>
