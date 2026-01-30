@@ -15,12 +15,17 @@ import java.util.function.Function;
 @Component
 public class JwtUtil {
 
-    // Secret key for JWT signing (in production, use environment variable)
-    private static final String SECRET_KEY = "StreetBiteSecretKeyForJWTTokenGeneration2024MustBe256BitsLong!!";
+    // Default secret key (also set this as JWT_SECRET env var on Render)
+    private static final String DEFAULT_SECRET = "StreetBiteSecretKeyForJWTTokenGeneration2024MustBe256BitsLong!!";
     private static final long JWT_TOKEN_VALIDITY = 24 * 60 * 60 * 1000; // 24 hours
 
+    private String getSecretKey() {
+        String envSecret = System.getenv("JWT_SECRET");
+        return (envSecret != null && !envSecret.isEmpty()) ? envSecret : DEFAULT_SECRET;
+    }
+
     private Key getSigningKey() {
-        return Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
+        return Keys.hmacShaKeyFor(getSecretKey().getBytes());
     }
 
     // Generate token for user
