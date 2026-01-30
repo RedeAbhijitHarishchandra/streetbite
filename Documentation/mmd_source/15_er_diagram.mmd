@@ -1,0 +1,58 @@
+erDiagram
+    USER ||--o{ REVIEW : places
+    USER ||..o{ VENDOR : favorites
+    
+    VENDOR ||--o{ MENU_ITEM : has
+    VENDOR ||--o{ PROMOTION : creates
+    VENDOR ||--o{ REVIEW : receives
+    VENDOR |{--|| USER : "is a"
+    
+    USER {
+        int UserID PK
+        string Name
+        string Email
+        string PasswordHash
+        string Role
+        string Phone
+    }
+    
+    VENDOR {
+        int VendorID PK
+        string Name
+        string Description
+        string Location
+        float Rating
+        int UserID_FK FK
+    }
+    
+    MENU_ITEM {
+        int ItemID PK
+        string Name
+        float Price
+        string Category
+        boolean Available
+        int VendorID_FK FK
+    }
+    
+    REVIEW {
+        int ReviewID PK
+        float Rating
+        string Comment
+        datetime Timestamp
+        int UserID_FK FK
+        int VendorID_FK FK
+    }
+    
+    PROMOTION {
+        int PromoID PK
+        string Title
+        float Discount
+        date ExpiryDate
+        int VendorID_FK FK
+    }
+
+    FAVORITE {
+        int FavID PK
+        int UserID_FK FK
+        int VendorID_FK FK
+    }

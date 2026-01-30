@@ -2,7 +2,7 @@
 
 import { Navbar } from '@/components/navbar'
 import { Button } from '@/components/ui/button'
-import { MapPin, Clock, Star, Phone, Share2, Navigation, ChevronLeft, Utensils, Heart, Send, CheckCircle2, Wifi, CreditCard, ShieldCheck } from 'lucide-react'
+import { MapPin, Clock, Star, Phone, Share2, Navigation, ChevronLeft, Utensils, Heart, Send, CheckCircle2, Wifi, CreditCard, ShieldCheck, Edit2, Trash2 } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
@@ -88,6 +88,11 @@ export default function VendorDetailsPage() {
     const [reviewRating, setReviewRating] = useState(5)
     const [reviewComment, setReviewComment] = useState('')
     const [submittingReview, setSubmittingReview] = useState(false)
+
+    // Edit review state
+    const [editingReviewId, setEditingReviewId] = useState<number | null>(null)
+    const [editRating, setEditRating] = useState(5)
+    const [editComment, setEditComment] = useState('')
 
     // Directions State
     const [showDirections, setShowDirections] = useState(false)
@@ -279,6 +284,79 @@ export default function VendorDetailsPage() {
             alert('Failed to submit review. Please try again.')
         } finally {
             setSubmittingReview(false)
+        }
+    }
+
+    const handleEditReview = async (reviewId: number) => {
+        const userStr = localStorage.getItem('user')
+        if (!userStr) {
+            toast({
+                title: 'Please sign in',
+                description: 'You need to be logged in to edit reviews',
+            })
+            return
+        }
+
+        const user = JSON.parse(userStr)
+
+        try {
+            await reviewApi.update(reviewId, {
+                userId: user.id,
+                rating: editRating,
+                comment: editComment
+            })
+
+            // Refresh reviews
+            const updatedReviews = await reviewApi.getByVendor(vendorId)
+            setReviews(updatedReviews || [])
+
+            setEditingReviewId(null)
+            toast({
+                title: 'Review updated',
+                description: 'Your review has been updated successfully',
+            })
+        } catch (error: any) {
+            console.error('Error updating review:', error)
+            toast({
+                title: 'Error',
+                description: error.response?.data?.error || 'Failed to update review',
+                variant: 'destructive'
+            })
+        }
+    }
+
+    const handleDeleteReview = async (reviewId: number) => {
+        if (!confirm('Are you sure you want to delete this review?')) return
+
+        const userStr = localStorage.getItem('user')
+        if (!userStr) {
+            toast({
+                title: 'Please sign in',
+                description: 'You need to be logged in to delete reviews',
+            })
+            return
+        }
+
+        const user = JSON.parse(userStr)
+
+        try {
+            await reviewApi.delete(reviewId, user.id)
+
+            // Refresh reviews
+            const updatedReviews = await reviewApi.getByVendor(vendorId)
+            setReviews(updatedReviews || [])
+
+            toast({
+                title: 'Review deleted',
+                description: 'Your review has been deleted',
+            })
+        } catch (error: any) {
+            console.error('Error deleting review:', error)
+            toast({
+                title: 'Error',
+                description: error.response?.data?.error || 'Failed to delete review',
+                variant: 'destructive'
+            })
         }
     }
 
@@ -1070,33 +1148,110 @@ export default function VendorDetailsPage() {
                                 </div>
                             ) : (
                                 <div className="space-y-4">
-                                    {reviews.map((review) => (
-                                        <div key={review.id} className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
-                                            <div className="flex items-start justify-between mb-3">
-                                                <div>
-                                                    <h4 className="font-bold text-lg">{review.user?.displayName || 'Anonymous'}</h4>
-                                                    <div className="flex items-center gap-2 mt-1">
-                                                        <div className="flex">
+                                    {reviews.map((review) => {
+                                        const userStr = typeof window !== 'undefined' ? localStorage.getItem('user') : null
+                                        const currentUser = userStr ? JSON.parse(userStr) : null
+                                        const isOwner = currentUser && review.user?.id === currentUser.id
+
+                                        return (
+                                            <div key={review.id} className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
+                                                {editingReviewId === review.id ? (
+                                                    // Edit mode
+                                                    <div className="space-y-4">
+                                                        <div className="flex items-center justify-between">
+                                                            <h4 className="font-bold text-lg">Editing your review</h4>
+                                                            <button
+                                                                onClick={() => setEditingReviewId(null)}
+                                                                className="text-gray-500 hover:text-gray-700"
+                                                            >
+                                                                Cancel
+                                                            </button>
+                                                        </div>
+                                                        <div className="flex gap-1">
                                                             {[1, 2, 3, 4, 5].map((star) => (
-                                                                <Star
+                                                                <button
                                                                     key={star}
-                                                                    size={16}
-                                                                    className={`${star <= review.rating
-                                                                        ? 'text-yellow-400 fill-yellow-400'
-                                                                        : 'text-gray-300'
-                                                                        }`}
-                                                                />
+                                                                    type="button"
+                                                                    onClick={() => setEditRating(star)}
+                                                                    className="transition-transform hover:scale-110"
+                                                                >
+                                                                    <Star
+                                                                        size={24}
+                                                                        className={`${star <= editRating
+                                                                            ? 'text-yellow-400 fill-yellow-400'
+                                                                            : 'text-gray-300'
+                                                                            }`}
+                                                                    />
+                                                                </button>
                                                             ))}
                                                         </div>
-                                                        <span className="text-sm text-gray-500">
-                                                            {new Date(review.createdAt).toLocaleDateString()}
-                                                        </span>
+                                                        <Textarea
+                                                            value={editComment}
+                                                            onChange={(e) => setEditComment(e.target.value)}
+                                                            placeholder="Update your review..."
+                                                            className="min-h-[100px] resize-none"
+                                                            maxLength={500}
+                                                        />
+                                                        <Button
+                                                            onClick={() => handleEditReview(review.id)}
+                                                            className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600"
+                                                        >
+                                                            Save Changes
+                                                        </Button>
                                                     </div>
-                                                </div>
+                                                ) : (
+                                                    // View mode
+                                                    <>
+                                                        <div className="flex items-start justify-between mb-3">
+                                                            <div>
+                                                                <h4 className="font-bold text-lg">{review.user?.displayName || 'Anonymous'}</h4>
+                                                                <div className="flex items-center gap-2 mt-1">
+                                                                    <div className="flex">
+                                                                        {[1, 2, 3, 4, 5].map((star) => (
+                                                                            <Star
+                                                                                key={star}
+                                                                                size={16}
+                                                                                className={`${star <= review.rating
+                                                                                    ? 'text-yellow-400 fill-yellow-400'
+                                                                                    : 'text-gray-300'
+                                                                                    }`}
+                                                                            />
+                                                                        ))}
+                                                                    </div>
+                                                                    <span className="text-sm text-gray-500">
+                                                                        {new Date(review.createdAt).toLocaleDateString()}
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                            {isOwner && (
+                                                                <div className="flex items-center gap-2">
+                                                                    <button
+                                                                        onClick={() => {
+                                                                            setEditingReviewId(review.id)
+                                                                            setEditRating(review.rating)
+                                                                            setEditComment(review.comment)
+                                                                        }}
+                                                                        className="p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                                                                        title="Edit review"
+                                                                    >
+                                                                        <Edit2 size={16} />
+                                                                    </button>
+                                                                    <button
+                                                                        onClick={() => handleDeleteReview(review.id)}
+                                                                        className="p-2 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                                                                        title="Delete review"
+                                                                    >
+                                                                        <Trash2 size={16} />
+                                                                    </button>
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                        <p className="text-gray-700 leading-relaxed">{review.comment}</p>
+                                                    </>
+                                                )}
                                             </div>
-                                            <p className="text-gray-700 leading-relaxed">{review.comment}</p>
-                                        </div>
-                                    ))}
+                                        )
+                                    })}
                                 </div>
                             )}
                         </div>

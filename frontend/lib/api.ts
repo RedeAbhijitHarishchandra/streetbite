@@ -132,11 +132,15 @@ export const menuApi = {
 
 /**
  * Review system API endpoints.
- * Methods to fetch and submit vendor reviews.
+ * Methods to fetch, submit, update, and delete vendor reviews.
  */
 export const reviewApi = {
   getByVendor: (vendorId: string) => api.get(`/reviews/vendor/${vendorId}`) as Promise<any>,
   create: (data: any) => api.post('/reviews', data) as Promise<any>,
+  update: (reviewId: number, data: { userId: number; rating?: number; comment?: string }) =>
+    api.put(`/reviews/${reviewId}`, data) as Promise<any>,
+  delete: (reviewId: number, userId: number) =>
+    api.delete(`/reviews/${reviewId}?userId=${userId}`) as Promise<any>,
 };
 
 /**

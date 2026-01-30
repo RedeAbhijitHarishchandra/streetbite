@@ -1,0 +1,61 @@
+graph TB
+    subgraph ClientLayer ["Client Layer"]
+        direction TB
+        App[Mobile App (Customer)]
+        Web[Web Dashboard (Vendor)]
+        Admin[Admin Panel (Web)]
+    end
+
+    Gateway[("API Gateway / Load Balancer")]
+
+    subgraph AppLayer ["Application Layer (Microservices)"]
+        direction TB
+        Auth[Auth Service]
+        Vendor[Vendor Service]
+        Order[Order Service]
+        Review[Review Service]
+        Notify[Notification Service]
+    end
+
+    subgraph DataLayer ["Data Layer"]
+        direction TB
+        DB[(Primary Database)]
+        Cache[(Redis Cache)]
+        Storage[(File Storage S3)]
+    end
+
+    subgraph External ["External Services"]
+        Maps[Google Maps API]
+        Pay[Payment Gateway]
+        Msg[Email/SMS Provider]
+    end
+
+    App --> Gateway
+    Web --> Gateway
+    Admin --> Gateway
+
+    Gateway --> Auth
+    Gateway --> Vendor
+    Gateway --> Order
+    Gateway --> Review
+    Gateway --> Notify
+
+    Auth --> DB
+    Vendor --> DB
+    Order --> DB
+    Review --> DB
+    
+    Vendor --> Cache
+    Order --> Cache
+
+    Vendor --> Storage
+    
+    Vendor --> Maps
+    Order --> Pay
+    Notify --> Msg
+
+    classDef box fill:#fff,stroke:#000,stroke-width:1px;
+    classDef layer fill:#fff,stroke:#000,stroke-width:2px,stroke-dasharray: 5 5;
+    
+    class App,Web,Admin,Gateway,Auth,Vendor,Order,Review,Notify,DB,Cache,Storage,Maps,Pay,Msg box;
+    class ClientLayer,AppLayer,DataLayer,External layer;
