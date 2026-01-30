@@ -15,13 +15,17 @@ import java.util.function.Function;
 @Component
 public class JwtUtil {
 
-    // Fixed secret key - MUST be exactly the same for signing and verification
-    private static final String SECRET_KEY = "StreetBiteSecretKey2024ForJWTv2";
+    // Use JWT_SECRET from env, fallback to default (must match Render env var
+    // exactly!)
+    private static final String SECRET_KEY;
     private static final long JWT_TOKEN_VALIDITY = 24 * 60 * 60 * 1000; // 24 hours
 
-    // Log the secret on startup (first 10 chars only for debugging)
-    public JwtUtil() {
-        System.out.println("JWT Secret initialized: " + SECRET_KEY.substring(0, 10) + "...");
+    static {
+        String envSecret = System.getenv("JWT_SECRET");
+        SECRET_KEY = (envSecret != null && !envSecret.isEmpty())
+                ? envSecret
+                : "StreetBiteSecretKeyForJWTTokenGeneration2024MustBe256BitsLong!!";
+        System.out.println("JWT Secret loaded: " + SECRET_KEY.substring(0, 15) + "...");
     }
 
     private Key getSigningKey() {
