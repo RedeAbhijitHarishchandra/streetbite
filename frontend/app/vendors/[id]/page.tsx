@@ -121,6 +121,14 @@ export default function VendorDetailsPage() {
                 const menuData = await menuApi.getByVendor(vendorId)
                 setMenuItems(menuData || [])
 
+                // Fetch reviews (public, no auth required)
+                try {
+                    const reviewData = await reviewApi.getByVendor(vendorId)
+                    setReviews(reviewData || [])
+                } catch (err) {
+                    console.error('Failed to fetch reviews:', err)
+                }
+
                 // Fetch active promotions
                 try {
                     const promos = await promotionApi.getActiveByVendor(vendorId)
