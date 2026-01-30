@@ -35,9 +35,14 @@ export default function SignInPage() {
         password: passwordInput
       })
 
+      console.log('Login response:', response);
+      console.log('Token received:', response.token);
+
       // Store JWT token and user info
       localStorage.setItem('token', response.token)
       localStorage.setItem('user', JSON.stringify(response.user))
+
+      console.log('Token stored:', localStorage.getItem('token'));
 
       // Notify other components (Navbar) of the update
       window.dispatchEvent(new Event('user-updated'))
