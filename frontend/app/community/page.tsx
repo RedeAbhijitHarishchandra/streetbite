@@ -47,9 +47,10 @@ export default function CommunityPage() {
     const [currentUser, setCurrentUser] = useState<any>(null);
 
     useEffect(() => {
-        // Check authentication
+        // Check authentication - need both user AND token
         const userStr = localStorage.getItem('user');
-        if (userStr) {
+        const token = localStorage.getItem('token');
+        if (userStr && token) {
             try {
                 const user = JSON.parse(userStr);
                 setIsLoggedIn(true);
@@ -180,8 +181,22 @@ export default function CommunityPage() {
             } else {
                 toast.success("Comment posted!");
             }
-        } catch (error) {
+        } catch (error: any) {
             console.error('Failed to post comment', error);
+            // Check for authentication errors
+            if (error?.response?.status === 401 || error?.response?.status === 400) {
+                const errorMsg = error?.response?.data?.error || '';
+                if (errorMsg.includes('log in') || errorMsg.includes('session') || errorMsg.includes('Invalid')) {
+                    toast.error('Session expired. Please log in again.', {
+                        description: 'Redirecting to sign in...'
+                    });
+                    // Clear invalid auth data
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('user');
+                    setTimeout(() => window.location.href = '/signin', 1500);
+                    return;
+                }
+            }
             toast.error('Failed to post comment');
         }
     };
