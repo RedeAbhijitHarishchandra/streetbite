@@ -116,7 +116,6 @@ public class DataSeeder implements CommandLineRunner {
                         "North Indian, Street Food",
                         "Connaught Place, New Delhi",
                         28.6315, 77.2167,
-                        4.8, 1250, 4.8,
                         "+91 98765 43210",
                         "10:00 AM - 10:00 PM",
                         "https://images.unsplash.com/photo-1601050690597-df0568f70950?w=800&q=80",
@@ -128,7 +127,6 @@ public class DataSeeder implements CommandLineRunner {
                         "Maharashtrian, Fast Food",
                         "Juhu Beach, Mumbai",
                         19.0988, 72.8264,
-                        4.7, 980, 4.7,
                         "+91 91234 56789",
                         "11:00 AM - 11:00 PM",
                         "https://images.unsplash.com/photo-1606491956689-2ea866880c84?w=800&q=80",
@@ -140,7 +138,6 @@ public class DataSeeder implements CommandLineRunner {
                         "Hyderabadi, Biryani",
                         "Charminar, Hyderabad",
                         17.3616, 78.4747,
-                        4.9, 2100, 4.9,
                         "+91 88888 77777",
                         "12:00 PM - 12:00 AM",
                         "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=800&q=80",
@@ -152,7 +149,6 @@ public class DataSeeder implements CommandLineRunner {
                         "South Indian, Vegetarian",
                         "Indiranagar, Bangalore",
                         12.9716, 77.5946,
-                        4.6, 850, 4.6,
                         "+91 77777 66666",
                         "7:00 AM - 10:00 PM",
                         "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=800&q=80",
@@ -164,7 +160,6 @@ public class DataSeeder implements CommandLineRunner {
                         "Bengali, Rolls",
                         "Park Street, Kolkata",
                         22.5726, 88.3639,
-                        4.5, 600, 4.5,
                         "+91 99999 55555",
                         "11:00 AM - 11:00 PM",
                         "https://images.unsplash.com/photo-1606787366850-de6330128bfc?w=800&q=80",
@@ -232,8 +227,7 @@ public class DataSeeder implements CommandLineRunner {
     }
 
     private Vendor createVendor(String name, String description, String cuisine, String address,
-            Double lat, Double lon, Double rating, Integer reviewCount,
-            Double avgRating, String phone, String hours, String bannerUrl, String displayUrl, User owner) {
+            Double lat, Double lon, String phone, String hours, String bannerUrl, String displayUrl, User owner) {
         Vendor vendor = new Vendor();
         vendor.setName(name);
         vendor.setDescription(description);
@@ -241,9 +235,10 @@ public class DataSeeder implements CommandLineRunner {
         vendor.setAddress(address);
         vendor.setLatitude(lat);
         vendor.setLongitude(lon);
-        vendor.setRating(rating);
-        vendor.setReviewCount(reviewCount);
-        vendor.setAverageRating(avgRating);
+        // Rating starts at 0 - will be calculated from customer reviews
+        vendor.setRating(0.0);
+        vendor.setReviewCount(0);
+        vendor.setAverageRating(0.0);
         vendor.setPhone(phone);
         vendor.setHours(hours);
         vendor.setBannerImageUrl(bannerUrl);
