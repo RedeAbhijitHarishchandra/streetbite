@@ -15,17 +15,17 @@ import java.util.function.Function;
 @Component
 public class JwtUtil {
 
-    // Default secret key (also set this as JWT_SECRET env var on Render)
-    private static final String DEFAULT_SECRET = "StreetBiteSecretKeyForJWTTokenGeneration2024MustBe256BitsLong!!";
+    // Fixed secret key - MUST be exactly the same for signing and verification
+    private static final String SECRET_KEY = "StreetBiteSecretKey2024ForJWTv2";
     private static final long JWT_TOKEN_VALIDITY = 24 * 60 * 60 * 1000; // 24 hours
 
-    private String getSecretKey() {
-        String envSecret = System.getenv("JWT_SECRET");
-        return (envSecret != null && !envSecret.isEmpty()) ? envSecret : DEFAULT_SECRET;
+    // Log the secret on startup (first 10 chars only for debugging)
+    public JwtUtil() {
+        System.out.println("JWT Secret initialized: " + SECRET_KEY.substring(0, 10) + "...");
     }
 
     private Key getSigningKey() {
-        return Keys.hmacShaKeyFor(getSecretKey().getBytes());
+        return Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
     }
 
     // Generate token for user
