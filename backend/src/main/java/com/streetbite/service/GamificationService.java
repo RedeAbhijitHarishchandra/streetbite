@@ -87,10 +87,10 @@ public class GamificationService {
     }
 
     /**
-     * Get leaderboard (top 10 users by XP)
+     * Get leaderboard (top 10 users by XP) - excludes banned users
      */
     public List<User> getLeaderboard() {
-        return userRepository.findTop10ByRoleOrderByXpDesc(User.Role.USER);
+        return userRepository.findTop10ByRoleAndIsActiveTrueOrderByXpDesc(User.Role.USER);
     }
 
     /**
